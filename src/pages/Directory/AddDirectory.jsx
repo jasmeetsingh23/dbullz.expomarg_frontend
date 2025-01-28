@@ -6,7 +6,6 @@ import {
   FaCalendarAlt,
   FaEdit,
 } from "react-icons/fa"; // Importing icons
-import Sidebar from "../sidebar/Sidebar";
 
 const AddDirectory = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +37,7 @@ const AddDirectory = () => {
 
     try {
       const response = await axios.post(
-        "https://api.dbzmanager.com/add-directory",
+        "https://expomarg.com/api/add-directory",
         formDataObj,
         {
           headers: {
@@ -61,10 +60,9 @@ const AddDirectory = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
       <main className="flex-1 p-10">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl mx-auto space-y-8">
-          <h1 className="text-3xl font-heading font-extrabold text-gray-800 text-center mb-6">
+          <h1 className="text-3xl font-heading  text-gray-800 text-center mb-6">
             Add Exhibition Directory
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -73,9 +71,9 @@ const AddDirectory = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="exhibitionName"
-                  className="block text-lg font-semibold font-heading text-gray-700 flex items-center"
+                  className=" text-lg  font-heading text-gray-700 flex items-center"
                 >
-                  <FaEdit className="mr-2 text-indigo-600" /> Exhibition Name
+                  <FaEdit className="mr-2 text-blue-600" /> Exhibition Name
                 </label>
                 <input
                   type="text"
@@ -84,7 +82,7 @@ const AddDirectory = () => {
                   value={formData.exhibitionName}
                   onChange={handleInputChange}
                   placeholder="Enter exhibition name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-body"
                   required
                 />
               </div>
@@ -93,9 +91,9 @@ const AddDirectory = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="year"
-                  className="block text-lg font-semibold font-heading text-gray-700 flex items-center"
+                  className=" text-lg  font-heading text-gray-700 flex items-center"
                 >
-                  <FaCalendarAlt className="mr-2 text-indigo-600" /> Year
+                  <FaCalendarAlt className="mr-2 text-blue-600" /> Year
                 </label>
                 <input
                   type="number"
@@ -104,7 +102,7 @@ const AddDirectory = () => {
                   value={formData.year}
                   onChange={handleInputChange}
                   placeholder="Enter year (e.g., 2024)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 font-body focus:border-blue-600"
                   required
                 />
               </div>
@@ -113,9 +111,9 @@ const AddDirectory = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="venue"
-                  className="block text-lg font-semibold font-heading text-gray-700 flex items-center"
+                  className=" text-lg  font-heading text-gray-700 flex items-center"
                 >
-                  <FaMapMarkerAlt className="mr-2 text-indigo-600" /> Venue
+                  <FaMapMarkerAlt className="mr-2 text-blue-600" /> Venue
                 </label>
                 <input
                   type="text"
@@ -124,7 +122,7 @@ const AddDirectory = () => {
                   value={formData.venue}
                   onChange={handleInputChange}
                   placeholder="Enter venue"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm font-body focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                   required
                 />
               </div>
@@ -133,9 +131,9 @@ const AddDirectory = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="document"
-                  className="block text-lg font-semibold font-heading text-gray-700 flex items-center"
+                  className=" text-lg  font-heading text-gray-700 flex items-center"
                 >
-                  <FaFileUpload className="mr-2 text-indigo-600" /> Upload
+                  <FaFileUpload className="mr-2 text-blue-600" /> Upload
                   Document
                 </label>
                 <input
@@ -144,7 +142,7 @@ const AddDirectory = () => {
                   name="document"
                   accept=".pdf,.doc,.docx,.txt"
                   onChange={handleFileChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-3 border font-body border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                   required
                 />
               </div>
@@ -153,7 +151,7 @@ const AddDirectory = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200 font-semibold font-heading text-lg flex items-center justify-center"
+              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200  font-heading text-lg flex items-center justify-center"
             >
               <FaFileUpload className="mr-2" /> Add Directory
             </button>

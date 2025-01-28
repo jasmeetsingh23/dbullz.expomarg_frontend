@@ -22,13 +22,13 @@ function Footer() {
     <footer
       className="text-white p-5 font-heading"
       style={{
-        background: "linear-gradient(45deg, #f44336, #000000)", // Gradient from red-500 to black
+        background: "linear-gradient(45deg, #91c848 , #4caf50)", // Gradient from red-500 to black
       }}
     >
       <div className="max-w-screen-xl mx-auto flex flex-col items-center space-y-5">
         {/* Footer Text */}
         <p className="text-sm text-center font-heading">
-          &copy; 2024 3D Model Storage Web App. All rights reserved.
+          &copy; 2024 ExpoMarg.com Web App. All rights reserved.
         </p>
       </div>
     </footer>

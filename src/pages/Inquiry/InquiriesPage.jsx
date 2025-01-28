@@ -1,456 +1,837 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "../sidebar/Sidebar";
-import "./style.css";
+import { FaDownload, FaEye, FaTimes, FaEdit, FaTrash } from "react-icons/fa";
 
-const InquiriesPage = () => {
+const HeaderInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [selectedInquiry, setSelectedInquiry] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const [sortOrder, setSortOrder] = useState("asc"); // Sorting order: 'asc' or 'desc'
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [updateFormData, setUpdateFormData] = useState(null);
+  const [files, setFiles] = useState({
+    floorPlan: null,
+    logoFiles: null,
+  });
 
-  // Fetch inquiries data from the API
   useEffect(() => {
-    axios
-      .get("https://api.dbzmanager.com/get-inquiries")
-      .then((response) => {
-        setInquiries(response.data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Error fetching inquiries");
-        setLoading(false);
-      });
+    fetchInquiries();
   }, []);
 
-  const handleSortById = () => {
-    const sortedInquiries = [...inquiries].sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.id - b.id;
-      } else {
-        return b.id - a.id;
-      }
-    });
-    setInquiries(sortedInquiries);
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  const fetchInquiries = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("https://expomarg.com/api/inquiries");
+      setInquiries(response.data.data);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch inquiries.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleViewDetails = (inquiry) => {
+  const handleView = (inquiry) => {
     setSelectedInquiry(inquiry);
-    setShowDetails(true);
+    setShowViewModal(true);
   };
 
-  const handleCloseDetails = () => {
-    setSelectedInquiry(null);
-    setShowDetails(false);
+  const handleEdit = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setUpdateFormData({
+      companyName: inquiry.company_name,
+      contactPerson: inquiry.contact_person,
+      contactEmail: inquiry.contact_email,
+      contactNumber: inquiry.contact_number,
+      website: inquiry.website,
+      eventName: inquiry.event_name,
+      venueCity: inquiry.venue_city,
+      eventDate: inquiry.event_date,
+      stallSize: inquiry.stall_size,
+      sidesOpenStall: inquiry.sides_open_stall,
+      brandColor: inquiry.brand_color,
+      meetingRoomRequired: inquiry.meeting_room_required,
+      storeRoomRequired: inquiry.store_room_required,
+      tvLedWallRequired: inquiry.tv_led_wall_required,
+      productDisplay: inquiry.product_display,
+      seatingRequirements: inquiry.seating_requirements,
+      numberOfProducts: inquiry.number_of_products,
+      sizeOfProducts: inquiry.size_of_products,
+      weightOfProducts: inquiry.weight_of_products,
+      specificInformation: inquiry.specific_information,
+      suggestedBudget: inquiry.suggested_budget,
+    });
+    setShowUpdateModal(true);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this inquiry?")) {
+      try {
+        await axios.delete(`https://expomarg.com/api/inquiry/${id}`);
+        fetchInquiries();
+      } catch (err) {
+        console.error("Error deleting inquiry:", err);
+        setError("Failed to delete inquiry.");
+      }
+    }
+  };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+
+    Object.keys(updateFormData).forEach((key) => {
+      formData.append(key, updateFormData[key]);
+    });
+
+    if (files.floorPlan) {
+      formData.append("floorPlan", files.floorPlan);
+    }
+    if (files.logoFiles) {
+      formData.append("logoFiles", files.logoFiles);
+    }
+
+    try {
+      await axios.put(
+        `https://expomarg.com/api/inquiry/${selectedInquiry.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setShowUpdateModal(false);
+      fetchInquiries();
+    } catch (err) {
+      console.error("Error updating inquiry:", err);
+      setError("Failed to update inquiry.");
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setFiles({
+      ...files,
+      [e.target.name]: e.target.files[0],
+    });
+  };
+
+  const handleInputChange = (e) => {
+    setUpdateFormData({
+      ...updateFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const ActionButtons = ({ inquiry }) => (
+    <div className="flex items-center  gap-2">
+      <button
+        onClick={() => handleView(inquiry)}
+        className="text-blue-600 hover:text-blue-800"
+        title="View"
+      >
+        <FaEye />
+      </button>
+      <button
+        onClick={() => handleEdit(inquiry)}
+        className="text-green-600 hover:text-green-800"
+        title="Edit"
+      >
+        <FaEdit />
+      </button>
+      <button
+        onClick={() => handleDelete(inquiry.id)}
+        className="text-red-600 hover:text-red-800"
+        title="Delete"
+      >
+        <FaTrash />
+      </button>
+    </div>
+  );
+
+  const InquiryCard = ({ inquiry, index }) => (
+    <div className="bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200">
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <span className="font-heading">Sign No: {index + 1}</span>
+          <ActionButtons inquiry={inquiry} />
+        </div>
+        <div className="text-sm space-y-1">
+          <p>
+            <span className="font-heading">Company:</span>{" "}
+            {inquiry.company_name}
+          </p>
+          <p>
+            <span className="font-heading">Event:</span> {inquiry.event_name}
+          </p>
+          <p>
+            <span className="font-heading">Contact:</span>{" "}
+            {inquiry.contact_person}
+          </p>
+          <p>
+            <span className="font-heading">City:</span> {inquiry.venue_city}
+          </p>
+          <p>
+            <span className="font-heading">Date:</span>{" "}
+            {(() => {
+              const date = new Date(inquiry.event_date);
+              const day = date.getDate();
+              const month = date
+                .toLocaleString("en-US", { month: "short" })
+                .toLowerCase();
+              const year = date.getFullYear();
+              return `${day},${month},${year}`;
+            })()}
+          </p>
+          <p>
+            <span className="font-heading">Submitted:</span>{" "}
+            {(() => {
+              const date = new Date(inquiry.submission_time);
+              const day = date.getDate();
+              const month = date
+                .toLocaleString("en-US", { month: "short" })
+                .toLowerCase();
+              const year = date.getFullYear();
+              const hours = date.getHours();
+              const minutes = date.getMinutes().toString().padStart(2, "0");
+              const seconds = date.getSeconds().toString().padStart(2, "0");
+              return `${day},${month},${year}, ${hours}:${minutes}:${seconds}`;
+            })()}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const UpdateModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white p-4 border-b border-gray-200">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-heading">Update Inquiry</h2>
+            <button onClick={() => setShowUpdateModal(false)}>
+              <FaTimes size={24} />
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleUpdateSubmit} className="p-4 space-y-4">
+          {/* Company Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Company Information</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  name="companyName"
+                  value={updateFormData?.companyName || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Contact Person
+                </label>
+                <input
+                  type="text"
+                  name="contactPerson"
+                  value={updateFormData?.contactPerson || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Email</label>
+                <input
+                  type="email"
+                  name="contactEmail"
+                  value={updateFormData?.contactEmail || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Phone</label>
+                <input
+                  type="tel"
+                  name="contactNumber"
+                  value={updateFormData?.contactNumber || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+
+            {/* Event Details */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Event Details</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Event Name
+                </label>
+                <input
+                  type="text"
+                  name="eventName"
+                  value={updateFormData?.eventName || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Venue City
+                </label>
+                <input
+                  type="text"
+                  name="venueCity"
+                  value={updateFormData?.venueCity || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Event Date
+                </label>
+                <input
+                  type="text" // Changed from date to text
+                  name="eventDate"
+                  value={updateFormData?.eventDate || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Website
+                </label>
+                <input
+                  type="url"
+                  name="website"
+                  value={updateFormData?.website || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+
+            {/* Stall Requirements */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Stall Requirements</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Stall Size
+                </label>
+                <input
+                  type="text"
+                  name="stallSize"
+                  value={updateFormData?.stallSize || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Sides Open
+                </label>
+                <input
+                  type="text"
+                  name="sidesOpenStall"
+                  value={updateFormData?.sidesOpenStall || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Brand Color
+                </label>
+                <input
+                  type="text"
+                  name="brandColor"
+                  value={updateFormData?.brandColor || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+
+            {/* Additional Requirements */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Additional Requirements</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Meeting Room Required
+                </label>
+                <select
+                  name="meetingRoomRequired"
+                  value={updateFormData?.meetingRoomRequired || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Store Room Required
+                </label>
+                <select
+                  name="storeRoomRequired"
+                  value={updateFormData?.storeRoomRequired || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  TV/LED Wall Required
+                </label>
+                <select
+                  name="tvLedWallRequired"
+                  value={updateFormData?.tvLedWallRequired || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Product Information */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Product Information</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Product Display
+                </label>
+                <input
+                  type="text"
+                  name="productDisplay"
+                  value={updateFormData?.productDisplay || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Number of Products
+                </label>
+                <input
+                  type="number"
+                  name="numberOfProducts"
+                  value={updateFormData?.numberOfProducts || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Size of Products
+                </label>
+                <input
+                  type="text"
+                  name="sizeOfProducts"
+                  value={updateFormData?.sizeOfProducts || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Weight of Products
+                </label>
+                <input
+                  type="text"
+                  name="weightOfProducts"
+                  value={updateFormData?.weightOfProducts || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+
+            {/* Files */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Files</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Floor Plan
+                </label>
+                <input
+                  type="file"
+                  name="floorPlan"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Logo Files
+                </label>
+                <input
+                  type="file"
+                  name="logoFiles"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+
+            {/* Additional Information */}
+            <div className="space-y-2">
+              <h3 className="font-heading text-lg">Additional Information</h3>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Specific Information
+                </label>
+                <textarea
+                  name="specificInformation"
+                  value={updateFormData?.specificInformation || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded h-24"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Suggested Budget
+                </label>
+                <input
+                  type="text"
+                  name="suggestedBudget"
+                  value={updateFormData?.suggestedBudget || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4">
+            <button
+              type="button"
+              onClick={() => setShowUpdateModal(false)}
+              className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Update Inquiry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 p-6">
-        <h1 className="text-3xl font-bold text-center mb-6 font-heading">
-          Inquiry Details
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-grow p-4 md:p-8">
+        <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
+          Inquiries
         </h1>
-        <table className="min-w-full table-auto border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-indigo-600 text-white">
-              <th
-                className="p-4 cursor-pointer font-heading"
-                onClick={handleSortById}
-              >
-                Inquiry ID
-                {sortOrder === "asc" ? " ▲" : " ▼"}
-              </th>
-              <th className="p-4 font-heading">Company Name</th>
-              <th className="p-4 font-heading">Contact Person</th>
-              <th className="p-4 font-heading">Event Name</th>
-              <th className="p-4 font-heading">Venue City</th>
-              <th className="p-4 font-heading">Event Date</th>
-              <th className="p-4 font-heading">Submission Time</th>
-              <th className="p-4 font-heading">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {inquiries.map((inquiry) => (
-              <tr key={inquiry.id} className="bg-gray-100 hover:bg-indigo-50">
-                <td className="p-4">{inquiry.id}</td>
-                <td className="p-4">{inquiry.company_name}</td>
-                <td className="p-4">{inquiry.contact_person}</td>
-                <td className="p-4">{inquiry.event_name}</td>
-                <td className="p-4">{inquiry.venue_city}</td>
-                <td className="p-4">
-                  {new Date(inquiry.event_date).toLocaleDateString()}
-                </td>
-                <td className="p-4">
-                  {new Date(inquiry.submission_time).toLocaleString()}
-                </td>
-                <td className="p-4">
-                  <button
-                    onClick={() => handleViewDetails(inquiry)}
-                    className="bg-indigo-600 font-heading text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-                  >
-                    View
-                  </button>
-                </td>
+
+        {loading && <p className="text-center">Loading inquiries...</p>}
+        {error && <p className="text-red-600 text-center">{error}</p>}
+
+        {/* Desktop table view */}
+        <div className="hidden md:block overflow-x-auto mt-8">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Sign No
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Company Name
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Event Name
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Contact Person
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Venue City
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Event Date
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Submission Time
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {inquiries.map((inquiry, index) => (
+                <tr key={inquiry.id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {index + 1}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {inquiry.company_name}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {inquiry.event_name}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {inquiry.contact_person}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {inquiry.venue_city}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {(() => {
+                      const date = new Date(inquiry.event_date);
+                      const day = date.getDate();
+                      const month = date
+                        .toLocaleString("en-US", { month: "short" })
+                        .toLowerCase();
+                      const year = date.getFullYear();
+                      return `${day},${month},${year}`;
+                    })()}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
+                    {(() => {
+                      const date = new Date(inquiry.submission_time);
+                      const day = date.getDate();
+                      const month = date
+                        .toLocaleString("en-US", { month: "short" })
+                        .toLowerCase();
+                      const year = date.getFullYear();
+                      const hours = date.getHours();
+                      const minutes = date
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0");
+                      const seconds = date
+                        .getSeconds()
+                        .toString()
+                        .padStart(2, "0");
+                      return `${day},${month},${year}, ${hours}:${minutes}:${seconds}`;
+                    })()}
+                  </td>
+                  <td className="py-2 px-4 border">
+                    <ActionButtons inquiry={inquiry} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        {showDetails && selectedInquiry && (
-          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg w-3/4 max-w-4xl shadow-lg overflow-y-auto">
-              <h2 className="text-xl font-bold mb-4 text-center font-heading">
-                Inquiry Details: {selectedInquiry.company_name}
-              </h2>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[80vh] overflow-y-auto">
-                {/* Company Name */}
-                <div>
-                  <label className="block font-heading font-semibold">
-                    Company Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.company_name}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
+        {/* Mobile card view */}
+        <div className="md:hidden space-y-4">
+          {inquiries.map((inquiry, index) => (
+            <InquiryCard key={inquiry.id} inquiry={inquiry} index={index} />
+          ))}
+        </div>
+
+        {/* View Modal */}
+        {showViewModal && selectedInquiry && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-lg animate__animated animate__fadeIn relative">
+              <div className="sticky top-0 bg-white p-4 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl md:text-2xl font-heading">
+                    Inquiry Details
+                  </h2>
+                  <button
+                    onClick={() => setShowViewModal(false)}
+                    className="text-gray-600 hover:text-gray-800 focus:outline-none"
+                    aria-label="Close Modal"
+                  >
+                    <FaTimes size={24} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-4 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Basic Information */}
+                  <div className="space-y-2">
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Company Name:
+                      </strong>{" "}
+                      {selectedInquiry.company_name}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Contact Person:
+                      </strong>{" "}
+                      {selectedInquiry.contact_person}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Email:</strong>{" "}
+                      {selectedInquiry.contact_email}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Phone:</strong>{" "}
+                      {selectedInquiry.contact_number}
+                    </div>
+                  </div>
+
+                  {/* Event Details */}
+                  <div className="space-y-2">
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Event Name:</strong>{" "}
+                      {selectedInquiry.event_name}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Venue City:</strong>{" "}
+                      {selectedInquiry.venue_city}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Event Date:</strong>{" "}
+                      {(() => {
+                        const date = new Date(selectedInquiry.event_date);
+                        const day = date.getDate();
+                        const month = date
+                          .toLocaleString("en-US", { month: "short" })
+                          .toLowerCase();
+                        const year = date.getFullYear();
+                        return `${day},${month},${year}`;
+                      })()}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Website:</strong>{" "}
+                      {selectedInquiry.website}
+                    </div>
+                  </div>
+
+                  {/* Requirements */}
+                  <div className="space-y-2">
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Stall Size:</strong>{" "}
+                      {selectedInquiry.stall_size}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Sides Open:</strong>{" "}
+                      {selectedInquiry.sides_open_stall}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Brand Color:
+                      </strong>{" "}
+                      {selectedInquiry.brand_color}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Size of Products:
+                      </strong>{" "}
+                      {selectedInquiry.size_of_products}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Weight of Products:
+                      </strong>{" "}
+                      {selectedInquiry.weight_of_products}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Specific Information:
+                      </strong>{" "}
+                      {selectedInquiry.specific_information}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Suggested Budget:
+                      </strong>{" "}
+                      {selectedInquiry.suggested_budget}
+                    </div>
+                  </div>
+
+                  {/* Additional Requirements */}
+                  <div className="space-y-2">
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Meeting Room:
+                      </strong>{" "}
+                      {selectedInquiry.meeting_room_required}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Store Room:</strong>{" "}
+                      {selectedInquiry.store_room_required}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        TV/LED Wall:
+                      </strong>{" "}
+                      {selectedInquiry.tv_led_wall_required}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Product Display:
+                      </strong>{" "}
+                      {selectedInquiry.product_display}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Seating Requirement:
+                      </strong>{" "}
+                      {selectedInquiry.seating_requirements}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Number of Products:
+                      </strong>{" "}
+                      {selectedInquiry.number_of_products}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Contact Person */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Contact Person:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.contact_person}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Contact Email */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Contact Email:
-                  </label>
-                  <input
-                    type="email"
-                    value={selectedInquiry.contact_email}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Contact Number */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Contact Number:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.contact_number}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Website */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Website:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.website}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Event Name */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Event Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.event_name}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Venue City */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Venue City:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.venue_city}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Event Date */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Event Date:
-                  </label>
-                  <input
-                    type="date"
-                    value={
-                      new Date(selectedInquiry.event_date)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Stall Size */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Stall Size:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.stall_size}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Sides Open Stall */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Sides Open Stall:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.sides_open_stall}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Floor Plan */}
-                <div className="col-span-2">
-                  <label className="block font-semibold mb-2 font-heading">
-                    Floor Plan:
-                  </label>
+                {/* Downloads Section */}
+                <div className="flex flex-col md:flex-row gap-4 pt-4">
                   <a
                     href={selectedInquiry.floorPlanDownloadLink}
                     download
-                    className="px-4 py-2 bg-blue-500 font-heading text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+                    className="w-full md:w-auto"
                   >
-                    Download Floor Plan
+                    <button className="w-full bg-blue-600 text-sm text-white px-6 py-2 rounded-md hover:bg-blue-800 transition duration-200 font-body flex items-center justify-center gap-2">
+                      <FaDownload /> Floor Plan
+                    </button>
                   </a>
-                </div>
-
-                {/* Logo Files */}
-                <div className="col-span-2 mt-4">
-                  <label className="block font-semibold mb-2 font-heading">
-                    Logo Files:
-                  </label>
                   <a
-                    href={selectedInquiry.logoFileDownloadLink}
+                    href={selectedInquiry.logoFilesDownloadLink}
                     download
-                    className="px-4 py-2 bg-blue-500 font-heading text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+                    className="w-full md:w-auto"
                   >
-                    Download Logo
+                    <button className="w-full bg-blue-600 text-sm font-body text-white px-6 py-2 rounded-md hover:bg-blue-800 transition duration-200 flex items-center justify-center gap-2">
+                      <FaDownload /> Logo
+                    </button>
                   </a>
                 </div>
-                {/* Brand Color */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Brand Color:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.brand_color}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Meeting Room Required */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Meeting Room Required:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.meeting_room_required}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Store Room Required */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Store Room Required:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.store_room_required}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* TV/LED Wall Required */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    TV/LED Wall Required:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.tv_led_wall_required}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Product Display */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Product Display:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.product_display}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Seating Requirements */}
-                <div className="col-span-2">
-                  <label className="block font-semibold font-heading">
-                    Seating Requirements:
-                  </label>
-                  <textarea
-                    value={JSON.parse(selectedInquiry.seating_requirements)}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Number of Products */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Number of Products:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.number_of_products}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Size of Products */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Size of Products:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.size_of_products}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Weight of Products */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Weight of Products:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.weight_of_products}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Deadline */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Deadline:
-                  </label>
-                  <input
-                    type="date"
-                    value={
-                      new Date(selectedInquiry.deadline)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Specific Information */}
-                <div className="col-span-2">
-                  <label className="block font-semibold font-heading">
-                    Specific Information:
-                  </label>
-                  <textarea
-                    value={selectedInquiry.specific_information}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Suggested Budget */}
-                <div>
-                  <label className="block font-semibold font-heading">
-                    Suggested Budget:
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedInquiry.suggested_budget}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                </div>
-
-                {/* Close Button */}
-                <div className="col-span-2 flex justify-end">
-                  <button
-                    onClick={handleCloseDetails}
-                    className="mt-4 bg-red-500 font-heading text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  >
-                    Close
-                  </button>
-                </div>
-              </form>
+              </div>
             </div>
           </div>
         )}
+
+        {/* Update Modal */}
+        {showUpdateModal && selectedInquiry && <UpdateModal />}
       </div>
     </div>
   );
 };
 
-export default InquiriesPage;
+export default HeaderInquiry;

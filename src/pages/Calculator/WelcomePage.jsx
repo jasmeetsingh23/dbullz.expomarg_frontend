@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
+import logo from "../../assets/z.png";
 
 function WelcomePage() {
   return (
@@ -10,7 +11,7 @@ function WelcomePage() {
         {/* Logo Section */}
         <div className="mb-12">
           <img
-            src="https://designbullz.com/wp-content/uploads/2024/10/DBZ-PNG-1024x645.png" // Replace with your logo path
+            src={logo} // Replace with your logo path
             alt="Company Logo"
             className="h-40 w-auto" // Increased logo size
           />
@@ -29,7 +30,7 @@ function WelcomePage() {
         <div className="mt-8">
           <Link
             to="/labour" // This will navigate to the Labour page
-            className="bg-gradient-to-r from-red-500 to-black text-white px-8 py-4 rounded-full hover:bg-gradient-to-r hover:from-yellow-300 hover:to-yellow-600 transition-all duration-300"
+            className="bg-gradient-to-r from-[#91c848] to-[#4caf50] text-white px-8 py-4 rounded-full  transition-all duration-300"
           >
             Start
           </Link>

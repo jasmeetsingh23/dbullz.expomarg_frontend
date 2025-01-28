@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import banner from "../../assets/b.jpg";
 
 const InquiryForm = () => {
   const [formData, setFormData] = useState({
@@ -108,7 +109,7 @@ const InquiryForm = () => {
     try {
       // Replace the URL with your actual API endpoint
       const response = await axios.post(
-        "https://api.dbzmanager.com/submit-inquiry",
+        "https://expomarg.com/api/submit-inquiry",
         formDataToSubmit
       );
       // Handle the response from the server
@@ -127,7 +128,7 @@ const InquiryForm = () => {
         {/* Top Image and Google Account Info */}
         <div className="text-center p-6 border-b border-gray-300">
           <img
-            src="https://lh4.googleusercontent.com/W2xlqLpK69CLDw5GwIORuSavOtzhmaQJuEpYjAWitJmuVn5vzbUbiqBpkh-T7S8-w5llGsoUJSJsPHsmD3FL1wXIVGKVv90ga7blio1vS0rpuaIAwY7YKu_Mh2zT7doJpA=w1529" // Replace with logo URL
+            src={banner} // Replace with logo URL
             alt="Logo"
             className="mx-auto mb-4"
           />

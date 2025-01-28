@@ -220,7 +220,6 @@ import {
 } from "react-icons/ai";
 import { FaCity, FaBuilding } from "react-icons/fa";
 import { MdEventAvailable } from "react-icons/md";
-import Sidebar from "../sidebar/Sidebar";
 
 const UpcomingEvents = () => {
   const [eventData, setEventData] = useState({
@@ -262,7 +261,7 @@ const UpcomingEvents = () => {
     try {
       // Make POST request to API endpoint
       const response = await axios.post(
-        "https://api.dbzmanager.com/add-event",
+        "https://expomarg.com/api/add-event",
         eventDetails,
         {
           headers: {
@@ -294,17 +293,16 @@ const UpcomingEvents = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="flex-1 bg-gray-50 min-h-screen p-6">
         <div className="bg-white shadow-lg rounded-lg p-6 max-w-4xl mx-auto space-y-8">
-          <h2 className="text-3xl font-heading font-semibold text-gray-800 mb-6 flex items-center">
-            <MdEventAvailable className="text-indigo-600 mr-2" />
+          <h2 className="text-2xl  font-heading text-gray-800 mb-6 flex items-center">
+            <MdEventAvailable className="text-blue-600 mr-2" />
             Add Event Details
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block  text-lg font-medium text-gray-700 flex items-center">
-                <MdEventAvailable className="text-indigo-600 mr-2" />
+              <label className="  text-xl font-heading text-gray-700 flex items-center">
+                <MdEventAvailable className="text-blue-600 mr-2" />
                 Exhibition Name
               </label>
               <input
@@ -314,14 +312,14 @@ const UpcomingEvents = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter exhibition name"
-                className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-3/4 px-4 py-3 font-body border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-lg font-medium text-gray-700 flex items-center">
-                  <AiFillCalendar className="text-indigo-600 mr-2" />
+                <label className=" text-lg font-heading text-gray-700 flex items-center">
+                  <AiFillCalendar className="text-blue-600 mr-2" />
                   Start Date
                 </label>
                 <input
@@ -330,13 +328,13 @@ const UpcomingEvents = () => {
                   value={eventData.startDate}
                   onChange={handleChange}
                   required
-                  className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg font-body shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                 />
               </div>
 
               <div>
-                <label className="block text-lg font-medium text-gray-700 flex items-center">
-                  <AiFillCalendar className="text-indigo-600 mr-2" />
+                <label className=" text-lg font-heading text-gray-700 flex items-center">
+                  <AiFillCalendar className="text-blue-600 mr-2" />
                   End Date
                 </label>
                 <input
@@ -345,14 +343,14 @@ const UpcomingEvents = () => {
                   value={eventData.endDate}
                   onChange={handleChange}
                   required
-                  className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-3/4 px-4 font-body py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-gray-700 flex items-center">
-                <FaBuilding className="text-indigo-600 mr-2" />
+              <label className=" text-lg font-heading text-gray-700 flex items-center">
+                <FaBuilding className="text-blue-600 mr-2" />
                 Venue
               </label>
               <input
@@ -362,13 +360,13 @@ const UpcomingEvents = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter venue"
-                className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-3/4 px-4 py-3 font-body border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-gray-700 flex items-center">
-                <FaCity className="text-indigo-600 mr-2" />
+              <label className=" text-lg font-heading text-gray-700 flex items-center">
+                <FaCity className="text-blue-600 mr-2" />
                 City
               </label>
               <input
@@ -378,13 +376,13 @@ const UpcomingEvents = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter city"
-                className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-3/4 px-4 py-3 font-body border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-gray-700 flex items-center">
-                <AiOutlineCheckCircle className="text-indigo-600 mr-2" />
+              <label className=" text-lg font-heading text-gray-700 flex items-center">
+                <AiOutlineCheckCircle className="text-blue-600 mr-2" />
                 Directory Available
               </label>
               <select
@@ -392,7 +390,7 @@ const UpcomingEvents = () => {
                 value={eventData.directoryAvailable}
                 onChange={handleChange}
                 required
-                className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-3/4 px-4 py-3 font-body border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
               >
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
@@ -400,8 +398,8 @@ const UpcomingEvents = () => {
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-gray-700 flex items-center">
-                <AiOutlinePlusCircle className="text-indigo-600 mr-2" />
+              <label className=" text-lg font-heading text-gray-700 flex items-center">
+                <AiOutlinePlusCircle className="text-blue-600 mr-2" />
                 Add Existing Clients
               </label>
               <div className="flex items-center space-x-4">
@@ -410,12 +408,12 @@ const UpcomingEvents = () => {
                   value={clientInput}
                   onChange={(e) => setClientInput(e.target.value)}
                   placeholder="Enter client name"
-                  className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-3/4 px-4 py-3 border border-gray-300 rounded-lg font-body shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                 />
                 <button
                   type="button"
                   onClick={handleAddClient}
-                  className="bg-indigo-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   Add
                 </button>
@@ -424,7 +422,7 @@ const UpcomingEvents = () => {
                 {clients.map((client, index) => (
                   <li
                     key={index}
-                    className="bg-gray-100 px-4 py-2 rounded-lg shadow-sm text-gray-800 font-medium"
+                    className="bg-gray-100 px-4 py-2 rounded-lg shadow-sm text-gray-800 font-heading"
                   >
                     {client}
                   </li>
@@ -434,7 +432,7 @@ const UpcomingEvents = () => {
 
             <button
               type="submit"
-              className="w-full font-heading py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200 font-semibold text-lg"
+              className="w-full  py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 font-heading text-lg"
             >
               Submit Event
             </button>

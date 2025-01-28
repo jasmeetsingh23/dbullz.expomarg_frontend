@@ -25,9 +25,8 @@ export default {
         googleDarkGray: "#3C4043", // Darker text
       },
       fontFamily: {
-        heading: ["Poppins", "sans-serif"],
-        body: ["Roboto", "sans-serif"],
-        sans: ["Roboto", "Arial", "sans-serif"], // Match Google Forms' font
+        heading: ["Montserrat", "sans-serif"], // Font for headings
+        body: ["Open Sans", "sans-serif"], // Font for content
       },
     },
   },

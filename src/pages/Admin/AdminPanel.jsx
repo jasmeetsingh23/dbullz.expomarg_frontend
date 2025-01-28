@@ -1,474 +1,815 @@
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import { FaEdit, FaTrashAlt, FaDownload } from "react-icons/fa";
+
+// const DesignList = () => {
+//   const [designs, setDesigns] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [currentDesign, setCurrentDesign] = useState(null);
+//   const [formData, setFormData] = useState({
+//     design: "",
+//     front_depth: "",
+//     industry: "",
+//     version: "",
+//     file1: null,
+//     file2: null,
+//   });
+
+//   useEffect(() => {
+//     fetchDesigns();
+//   }, []);
+
+//   const fetchDesigns = async () => {
+//     setLoading(true);
+//     try {
+//       const response = await axios.get("https://expomarg.com/api/uploads");
+//       setDesigns(response.data.uploads);
+//     } catch (err) {
+//       console.error("Error fetching designs:", err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleDelete = async (id) => {
+//     if (window.confirm("Are you sure you want to delete this design?")) {
+//       try {
+//         await axios.delete(`https://expomarg.com/api/uploads/${id}`);
+//         fetchDesigns();
+//         alert("Design deleted successfully");
+//       } catch (err) {
+//         console.error("Error deleting design:", err);
+//         alert("Error deleting design");
+//       }
+//     }
+//   };
+
+//   const handleViewFile = (fileUrl) => {
+//     window.open(fileUrl, "_blank");
+//   };
+
+//   const handleEdit = (design) => {
+//     setCurrentDesign(design);
+//     setFormData({
+//       design: design.design,
+//       front_depth: design.front_depth,
+//       industry: design.industry,
+//       version: design.version,
+//       file1: null,
+//       file2: null,
+//     });
+//     setIsModalOpen(true);
+//   };
+
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleFileChange = (e) => {
+//     const { name, files } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: files[0],
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     const form = new FormData();
+//     form.append("design", formData.design);
+//     form.append("front_depth", formData.front_depth);
+//     form.append("industry", formData.industry);
+//     form.append("version", formData.version);
+//     if (formData.file1) form.append("file1", formData.file1);
+//     if (formData.file2) form.append("file2", formData.file2);
+
+//     try {
+//       await axios.put(
+//         `https://expomarg.com/api/upload/${currentDesign.id}`,
+//         form
+//       );
+//       fetchDesigns();
+//       setIsModalOpen(false);
+//       alert("Design updated successfully");
+//     } catch (err) {
+//       console.error("Error updating design:", err);
+//       alert("Error updating design");
+//     }
+//   };
+
+//   // Card view for mobile screens
+//   const DesignCard = ({ design, index }) => (
+//     <div className="bg-white p-4 rounded-lg shadow mb-4">
+//       <div className="grid grid-cols-2 gap-2">
+//         <div className="text-xs font-heading">S.No</div>
+//         <div className="text-xs font-body">{index + 1}</div>
+
+//         <div className="text-xs font-heading">File Number</div>
+//         <div className="text-xs font-body">{design.file_number}</div>
+
+//         <div className="text-xs font-heading">Design</div>
+//         <div className="text-xs font-body">{design.design}</div>
+
+//         <div className="text-xs font-heading">Front Depth</div>
+//         <div className="text-xs font-body">{design.front_depth}</div>
+
+//         <div className="text-xs font-heading">Industry</div>
+//         <div className="text-xs font-body">{design.industry}</div>
+//       </div>
+
+//       <div className="mt-4 flex flex-col space-y-3">
+//         <button
+//           onClick={() => handleViewFile(design.file_url_1)}
+//           className="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-800"
+//         >
+//           <FaDownload />
+//           <span className="text-xs font-heading">Download 3D File</span>
+//         </button>
+
+//         {design.file_url_2 && (
+//           <div className="flex justify-center">
+//             <img
+//               src={design.file_url_2}
+//               alt="File 2"
+//               className="w-20 h-20 object-contain cursor-pointer hover:opacity-80"
+//               onClick={() => handleViewFile(design.file_url_2)}
+//               title="Click to view"
+//             />
+//           </div>
+//         )}
+
+//         <div className="flex justify-center space-x-4">
+//           <button
+//             onClick={() => handleEdit(design)}
+//             className="text-blue-600 hover:text-blue-800 p-2"
+//             title="Edit"
+//           >
+//             <FaEdit size={20} />
+//           </button>
+//           <button
+//             onClick={() => handleDelete(design.id)}
+//             className="text-red-600 hover:text-red-800 p-2"
+//             title="Delete"
+//           >
+//             <FaTrashAlt size={20} />
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   return (
+//     <div className="p-4 md:p-8 bg-white">
+//       <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
+//         Design List
+//       </h1>
+
+//       {/* Desktop view */}
+//       <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
+//         <table className="min-w-full">
+//           <thead>
+//             <tr className="bg-gray-50">
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 S.No
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 File Number
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 Design
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 Front Depth
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 Industry
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 Version
+//               </th>
+//               <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+//                 3D File
+//               </th>
+//               <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+//                 Jpeg File
+//               </th>
+//               <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+//                 Actions
+//               </th>
+//             </tr>
+//           </thead>
+//           <tbody className="divide-y divide-gray-200">
+//             {designs.map((design, index) => (
+//               <tr key={design.id} className="hover:bg-gray-50">
+//                 <td className="py-4 px-4 text-xs text-gray-900">{index + 1}</td>
+//                 <td className="py-4 px-4 text-xs text-gray-900">
+//                   {design.file_number}
+//                 </td>
+//                 <td className="py-4 px-4 text-xs text-gray-900">
+//                   {design.design}
+//                 </td>
+//                 <td className="py-4 px-4 text-xs text-gray-900">
+//                   {design.front_depth}
+//                 </td>
+//                 <td className="py-4 px-4 text-xs text-gray-900">
+//                   {design.industry}
+//                 </td>
+//                 <td className="py-4 px-4 text-xs text-gray-900">
+//                   {design.version}
+//                 </td>
+//                 <td className="py-4 px-4 text-left">
+//                   <button
+//                     onClick={() => handleViewFile(design.file_url_1)}
+//                     className="text-blue-600 hover:text-blue-800 flex items-center space-x-2"
+//                   >
+//                     <FaDownload className="inline-block" />
+//                     <span className="text-xs">Download</span>
+//                   </button>
+//                 </td>
+//                 <td className="py-4 px-4">
+//                   {design.file_url_2 && (
+//                     <div className="flex justify-center">
+//                       <img
+//                         src={design.file_url_2}
+//                         alt="File 2"
+//                         className="w-12 h-12 object-contain cursor-pointer hover:opacity-80"
+//                         onClick={() => handleViewFile(design.file_url_2)}
+//                         title="Click to view"
+//                       />
+//                     </div>
+//                   )}
+//                 </td>
+//                 <td className="py-4 px-4">
+//                   <div className="flex justify-center gap-3">
+//                     <button
+//                       onClick={() => handleEdit(design)}
+//                       className="text-blue-600 hover:text-blue-800"
+//                       title="Edit"
+//                     >
+//                       <FaEdit size={18} />
+//                     </button>
+//                     <button
+//                       onClick={() => handleDelete(design.id)}
+//                       className="text-red-600 hover:text-red-800"
+//                       title="Delete"
+//                     >
+//                       <FaTrashAlt size={18} />
+//                     </button>
+//                   </div>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+//       {/* Mobile view */}
+//       <div className="md:hidden space-y-4">
+//         {designs.map((design, index) => (
+//           <DesignCard key={design.id} design={design} index={index} />
+//         ))}
+//       </div>
+
+//       {loading && (
+//         <div className="flex justify-center items-center mt-4">
+//           <div className="text-gray-600">Loading...</div>
+//         </div>
+//       )}
+
+//       {!loading && designs.length === 0 && (
+//         <div className="text-center mt-4 p-4 bg-gray-50 rounded-lg">
+//           <p className="text-gray-600">No designs found</p>
+//         </div>
+//       )}
+
+//       {/* Responsive Modal */}
+//       {isModalOpen && (
+//         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4">
+//           <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
+//             <h2 className="text-xl font-heading mb-4">Edit Design</h2>
+//             <form onSubmit={handleSubmit} className="space-y-4">
+//               <div>
+//                 <label className="block text-sm font-heading mb-2">
+//                   Design
+//                 </label>
+//                 <input
+//                   type="text"
+//                   name="design"
+//                   value={formData.design}
+//                   onChange={handleInputChange}
+//                   className="w-full px-3 py-2  border rounded font-body text-sm"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block font-heading text-sm font-medium mb-2">
+//                   Front Depth
+//                 </label>
+//                 <input
+//                   type="text"
+//                   name="front_depth"
+//                   value={formData.front_depth}
+//                   onChange={handleInputChange}
+//                   className="w-full px-3 font-body py-2 border rounded text-sm"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block font-heading text-sm font-medium mb-2">
+//                   Industry
+//                 </label>
+//                 <input
+//                   type="text"
+//                   name="industry"
+//                   value={formData.industry}
+//                   onChange={handleInputChange}
+//                   className="w-full px-3 py-2 font-body border rounded text-sm"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block font-heading text-sm font-medium mb-2">
+//                   Version
+//                 </label>
+//                 <input
+//                   type="text"
+//                   name="version"
+//                   value={formData.version}
+//                   onChange={handleInputChange}
+//                   className="w-full px-3 py-2 font-body border rounded text-sm"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block font-heading text-sm font-medium mb-2">
+//                   3D File
+//                 </label>
+//                 <input
+//                   type="file"
+//                   name="file1"
+//                   accept=".max"
+//                   onChange={handleFileChange}
+//                   className="w-full px-3 py-2 font-body border rounded text-sm"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block text-sm font-heading font-medium mb-2">
+//                   JPEG File
+//                 </label>
+//                 <input
+//                   type="file"
+//                   name="file2"
+//                   accept="image/jpeg, image/jpg, image/png"
+//                   onChange={handleFileChange}
+//                   className="w-full px-3 py-2 border font-body rounded text-sm"
+//                 />
+//               </div>
+//               <div className="flex justify-end gap-3 pt-4">
+//                 <button
+//                   type="button"
+//                   onClick={() => setIsModalOpen(false)}
+//                   className="px-4 py-2 bg-gray-300 font-heading text-gray-700 rounded text-sm"
+//                 >
+//                   Cancel
+//                 </button>
+//                 <button
+//                   type="submit"
+//                   className="px-4 py-2 font-heading bg-blue-600 text-white rounded text-sm"
+//                 >
+//                   Update
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default DesignList;
+
 import React, { useState, useEffect } from "react";
-
 import axios from "axios";
-import { FaTrashAlt, FaEdit, FaUserCircle } from "react-icons/fa";
-import Header from "../../components/Header";
+import { FaEdit, FaTrashAlt, FaDownload, FaSearch } from "react-icons/fa";
 
-function AdminPanel() {
-  const [files, setFiles] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const DesignList = () => {
+  const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [searchParams, setSearchParams] = useState({
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDesign, setCurrentDesign] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [formData, setFormData] = useState({
     design: "",
-    front: "",
-    depth: "",
+    front_depth: "",
+    industry: "",
+    version: "",
+    file1: null,
+    file2: null,
   });
-  const [searched, setSearched] = useState(false);
-  const [newFile1, setNewFile1] = useState(null);
-  const [newFile2, setNewFile2] = useState(null);
-  const [editingFile, setEditingFile] = useState(null); // State for the file being edited
-  const [industries, setIndustries] = useState([]); // New state for industries
-
-  // Fetching files for the admin view
-  const fetchFiles = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("https://api.dbzmanager.com/uploads");
-      setFiles(response.data.uploads);
-    } catch (error) {
-      setErrorMessage("Error fetching files.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch unique industries for the dropdown
-  const fetchIndustries = async () => {
-    try {
-      const response = await axios.get("https://api.dbzmanager.com/industries");
-      setIndustries(response.data.industries);
-    } catch (error) {
-      console.error("Error fetching industries:", error);
-    }
-  };
 
   useEffect(() => {
-    fetchFiles(); // Initial fetch of files
-    fetchIndustries(); // Fetch industries for the dropdown
+    fetchDesigns();
   }, []);
 
-  // Handle file deletion by fileNumber
-  const handleDelete = async (fileNumber) => {
+  const fetchDesigns = async () => {
+    setLoading(true);
     try {
-      await axios.delete(`https://api.dbzmanager.com/uploads/${fileNumber}`);
-      setFiles(files.filter((file) => file.file_number !== fileNumber)); // Filter by file_number
-      alert("File deleted successfully!");
-    } catch (error) {
-      setErrorMessage("Error deleting file.");
-    }
-  };
-
-  const handleSearch = async () => {
-    const { design, front, depth, industry } = searchParams;
-    const front_depth = front && depth ? `${front} X ${depth}` : "";
-
-    try {
-      setLoading(true);
-      const response = await axios.get("https://api.dbzmanager.com/uploads", {
-        params: { design, front_depth, industry },
-      });
-      setFiles(response.data.uploads);
-    } catch (error) {
-      setErrorMessage("Error fetching files.");
+      const response = await axios.get("https://expomarg.com/api/uploads");
+      setDesigns(response.data.uploads);
+    } catch (err) {
+      console.error("Error fetching designs:", err);
     } finally {
       setLoading(false);
-      setSearched(true);
     }
   };
 
-  // Reset search filters
-  const handleReset = () => {
-    setSearchParams({
-      design: "",
-      front: "",
-      depth: "",
-    });
-    setSearched(false);
-    fetchFiles();
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this design?")) {
+      try {
+        await axios.delete(`https://expomarg.com/api/uploads/${id}`);
+        fetchDesigns();
+        alert("Design deleted successfully");
+      } catch (err) {
+        console.error("Error deleting design:", err);
+        alert("Error deleting design");
+      }
+    }
   };
 
-  // Handle the edit functionality
-  const handleEdit = async (file) => {
-    const updatedData = {
-      design: searchParams.design || file.design,
-      front_depth:
-        `${searchParams.front} X ${searchParams.depth}` || file.front_depth,
-      industry: searchParams.industry || file.industry, // Ensure the industry is included in the update
-    };
+  const handleViewFile = (fileUrl) => {
+    window.open(fileUrl, "_blank");
+  };
 
-    const formData = new FormData();
-    formData.append("design", updatedData.design);
-    formData.append("front_depth", updatedData.front_depth);
-    formData.append("industry", updatedData.industry); // Add industry to formData
-    // Append new files if selected
-    if (newFile1) formData.append("file1", newFile1);
-    if (newFile2) formData.append("file2", newFile2);
+  const handleEdit = (design) => {
+    setCurrentDesign(design);
+    setFormData({
+      design: design.design,
+      front_depth: design.front_depth,
+      industry: design.industry,
+      version: design.version,
+      file1: null,
+      file2: null,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files[0],
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    form.append("design", formData.design);
+    form.append("front_depth", formData.front_depth);
+    form.append("industry", formData.industry);
+    form.append("version", formData.version);
+    if (formData.file1) form.append("file1", formData.file1);
+    if (formData.file2) form.append("file2", formData.file2);
 
     try {
-      const response = await axios.put(
-        `https://api.dbzmanager.com/uploads/${file.file_number}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+      await axios.put(
+        `https://expomarg.com/api/upload/${currentDesign.id}`,
+        form
       );
-      alert("File updated successfully!");
-      fetchFiles(); // Re-fetch the files after updating
-      setEditingFile(null); // Close the edit modal/form
-    } catch (error) {
-      setErrorMessage("Error updating file.");
+      fetchDesigns();
+      setIsModalOpen(false);
+      alert("Design updated successfully");
+    } catch (err) {
+      console.error("Error updating design:", err);
+      alert("Error updating design");
     }
   };
 
-  // Handle setting the file to edit
-  const handleOpenEdit = (file) => {
-    setEditingFile(file);
-    setSearchParams({
-      design: file.design,
-      front: file.front_depth.split(" X ")[0], // Assuming format "front X depth"
-      depth: file.front_depth.split(" X ")[1],
-      industry: file.industry,
-    });
-  };
+  // Filter designs based on search query
+  const filteredDesigns = designs.filter((design) => {
+    const searchTerm = searchQuery.toLowerCase();
+    return (
+      design.file_number?.toLowerCase().includes(searchTerm) ||
+      design.design?.toLowerCase().includes(searchTerm) ||
+      design.front_depth?.toLowerCase().includes(searchTerm) ||
+      design.industry?.toLowerCase().includes(searchTerm) ||
+      design.version?.toLowerCase().includes(searchTerm) ||
+      design.file_url_1?.toLowerCase().includes(searchTerm) ||
+      design.file_url_2?.toLowerCase().includes(searchTerm)
+    );
+  });
 
-  useEffect(() => {
-    fetchFiles(); // Initial fetch of files
-  }, []);
+  const DesignCard = ({ design, index }) => (
+    <div className="bg-white p-4 rounded-lg shadow mb-4">
+      <div className="grid grid-cols-2 gap-2">
+        <div className="text-xs font-heading">S.No</div>
+        <div className="text-xs font-body">{index + 1}</div>
+
+        <div className="text-xs font-heading">File Number</div>
+        <div className="text-xs font-body">{design.file_number}</div>
+
+        <div className="text-xs font-heading">Design</div>
+        <div className="text-xs font-body">{design.design}</div>
+
+        <div className="text-xs font-heading">Front Depth</div>
+        <div className="text-xs font-body">{design.front_depth}</div>
+
+        <div className="text-xs font-heading">Industry</div>
+        <div className="text-xs font-body">{design.industry}</div>
+      </div>
+
+      <div className="mt-4 flex flex-col space-y-3">
+        <button
+          onClick={() => handleViewFile(design.file_url_1)}
+          className="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-800"
+        >
+          <FaDownload />
+          <span className="text-xs font-heading">Download 3D File</span>
+        </button>
+
+        {design.file_url_2 && (
+          <div className="flex justify-center">
+            <img
+              src={design.file_url_2}
+              alt="File 2"
+              className="w-20 h-20 object-contain cursor-pointer hover:opacity-80"
+              onClick={() => handleViewFile(design.file_url_2)}
+              title="Click to view"
+            />
+          </div>
+        )}
+
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={() => handleEdit(design)}
+            className="text-blue-600 hover:text-blue-800 p-2"
+            title="Edit"
+          >
+            <FaEdit size={20} />
+          </button>
+          <button
+            onClick={() => handleDelete(design.id)}
+            className="text-red-600 hover:text-red-800 p-2"
+            title="Delete"
+          >
+            <FaTrashAlt size={20} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-black font-body">
-      <Header />
+    <div className="p-4 md:p-8 bg-white">
+      <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
+        Design List
+      </h1>
 
-      {/* Admin Panel Section */}
-      {/* Admin Panel Section */}
-      <div className="w-full p-6 text-center shadow-lg flex justify-center items-center">
-        <div className="flex items-center">
-          <FaUserCircle size={60} />
-          <div className="ml-4">
-            <h1 className="text-2xl font-semibold">Admin Panel</h1>
-            <p className="text-sm">Welcome, Admin</p>
-          </div>
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative max-w-md mx-auto">
+          <input
+            type="text"
+            placeholder="Search in File Number, Design, Front Depth, Industry, Version..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border rounded-lg font-body text-sm focus:outline-none focus:border-blue-500"
+          />
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
       </div>
 
-      <main className="flex-grow flex items-center justify-center p-4 sm:p-8">
-        <div className="w-full max-w-7xl p-4 sm:p-6 border rounded-lg shadow-lg bg-white mx-auto">
-          <div className="mb-6">
-            <div className="flex flex-wrap items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              {/* Stall Layout Selector */}
-              <div className="w-full sm:w-[48%] md:w-[25%]">
-                <h2 className="text-xl font-semibold text-black mb-2">
-                  Select Stall Layout
-                </h2>
-                <div className="relative">
-                  <select
-                    value={searchParams.design}
-                    onChange={(e) => {
-                      const updatedSearchParams = {
-                        ...searchParams,
-                        design: e.target.value,
-                      };
-                      setSearchParams(updatedSearchParams);
-                      // Store updated searchParams in localStorage
-                      localStorage.setItem(
-                        "searchParams",
-                        JSON.stringify(updatedSearchParams)
-                      );
-                    }}
-                    className="block w-full p-3 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      {/* Desktop view */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
+        <table className="min-w-full">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                S.No
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                File Number
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                Design
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                Front Depth
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                Industry
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                Version
+              </th>
+              <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                3D File
+              </th>
+              <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                Jpeg File
+              </th>
+              <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {filteredDesigns.map((design, index) => (
+              <tr key={design.id} className="hover:bg-gray-50">
+                <td className="py-4 px-4 text-xs text-gray-900">{index + 1}</td>
+                <td className="py-4 px-4 text-xs text-gray-900">
+                  {design.file_number}
+                </td>
+                <td className="py-4 px-4 text-xs text-gray-900">
+                  {design.design}
+                </td>
+                <td className="py-4 px-4 text-xs text-gray-900">
+                  {design.front_depth}
+                </td>
+                <td className="py-4 px-4 text-xs text-gray-900">
+                  {design.industry}
+                </td>
+                <td className="py-4 px-4 text-xs text-gray-900">
+                  {design.version}
+                </td>
+                <td className="py-4 px-4 text-left">
+                  <button
+                    onClick={() => handleViewFile(design.file_url_1)}
+                    className="text-blue-600 hover:text-blue-800 flex items-center space-x-2"
                   >
-                    <option value="">Select Design</option>
-                    <option value="1 side open">1 side open</option>
-                    <option value="2 side open">2 side open</option>
-                    <option value="3 side open">3 side open</option>
-                    <option value="4 side open">4 side open</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Stall Size Inputs */}
-              <div className="w-full sm:w-[48%] md:w-[25%]">
-                <h2 className="text-xl font-semibold text-black mb-2">
-                  Enter Stall Size (In Meters)
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Front"
-                    value={searchParams.front}
-                    onChange={(e) => {
-                      const updatedSearchParams = {
-                        ...searchParams,
-                        front: e.target.value,
-                      };
-                      setSearchParams(updatedSearchParams);
-                      // Store updated searchParams in localStorage
-                      localStorage.setItem(
-                        "searchParams",
-                        JSON.stringify(updatedSearchParams)
-                      );
-                    }}
-                    className="border-2 p-3 rounded-md w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="text-xl font-bold text-black">X</span>
-                  <input
-                    type="text"
-                    placeholder="Depth"
-                    value={searchParams.depth}
-                    onChange={(e) => {
-                      const updatedSearchParams = {
-                        ...searchParams,
-                        depth: e.target.value,
-                      };
-                      setSearchParams(updatedSearchParams);
-                      // Store updated searchParams in localStorage
-                      localStorage.setItem(
-                        "searchParams",
-                        JSON.stringify(updatedSearchParams)
-                      );
-                    }}
-                    className="border-2 p-3 rounded-md w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              {/* Industry Dropdown */}
-              <div className="w-full sm:w-[48%] md:w-[25%]">
-                <h2 className="text-xl font-semibold text-black mb-2">
-                  Select Industry (Optional)
-                </h2>
-                <select
-                  value={searchParams.industry}
-                  onChange={(e) => {
-                    const updatedSearchParams = {
-                      ...searchParams,
-                      industry: e.target.value,
-                    };
-                    setSearchParams(updatedSearchParams);
-                    // Store updated searchParams in localStorage
-                    localStorage.setItem(
-                      "searchParams",
-                      JSON.stringify(updatedSearchParams)
-                    );
-                  }}
-                  className="border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Industry</option>
-                  {industries.map((industry, index) => (
-                    <option key={index} value={industry}>
-                      {industry}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Search Button */}
-              <div className="w-full sm:w-auto md:w-[20%] mt-4 sm:mt-9">
-                <button
-                  onClick={handleSearch}
-                  className="bg-blue-500 text-white px-4 py-2 mt-9 rounded-md w-full sm:w-auto hover:bg-blue-600 transition duration-300"
-                >
-                  Search
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Loading/Error Messages */}
-          <div className="mb-6">
-            {loading && (
-              <p className="mt-4 text-center text-black">Loading files...</p>
-            )}
-            {errorMessage && (
-              <p className="text-red-600 mt-4">{errorMessage}</p>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* List of uploaded files */}
-      {searched && (
-        <div className="p-8">
-          <h3 className="text-2xl font-bold mb-4 text-center">
-            Uploaded Files
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {files.length > 0 ? (
-              files.map((file, index) => (
-                <div
-                  key={index}
-                  className="border p-4 rounded-lg shadow-lg flex flex-col transition transform "
-                >
-                  {/* Display file image 1 */}
-                  {file.file_url_1 &&
-                    file.file_url_1.match(/\.(jpeg|jpg)$/i) && (
-                      <div className="w-full mb-4">
-                        <img
-                          src={file.file_url_1}
-                          alt={file.file_number}
-                          className="w-full h-auto rounded-lg shadow-md"
-                        />
-                      </div>
-                    )}
-
-                  {/* Display file image 2 (thumbnail) */}
-                  {file.file_url_2 &&
-                    file.file_url_2.match(/\.(jpeg|jpg)$/i) && (
-                      <div className="w-full mb-4">
-                        <img
-                          src={file.file_url_2}
-                          alt={`${file.file_number}_thumbnail`}
-                          className="w-full h-auto rounded-lg shadow-md"
-                        />
-                      </div>
-                    )}
-
-                  {/* Display file details */}
-                  <p className="font-semibold">{file.design}</p>
-                  <p className="text-gray-500">
-                    Front x Depth: {file.front_depth}
-                  </p>
-
-                  {/* Edit and Delete buttons */}
-                  <div className="flex mt-4 justify-between">
+                    <FaDownload className="inline-block" />
+                    <span className="text-xs">Download</span>
+                  </button>
+                </td>
+                <td className="py-4 px-4">
+                  {design.file_url_2 && (
+                    <div className="flex justify-center">
+                      <img
+                        src={design.file_url_2}
+                        alt="File 2"
+                        className="w-12 h-12 object-contain cursor-pointer hover:opacity-80"
+                        onClick={() => handleViewFile(design.file_url_2)}
+                        title="Click to view"
+                      />
+                    </div>
+                  )}
+                </td>
+                <td className="py-4 px-4">
+                  <div className="flex justify-center gap-3">
                     <button
-                      onClick={() => handleOpenEdit(file)}
-                      className="bg-yellow-500 text-white px-4 py-2 rounded-md flex items-center"
+                      onClick={() => handleEdit(design)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
                     >
-                      <FaEdit className="mr-2" /> Edit
+                      <FaEdit size={18} />
                     </button>
-                    {/* Delete button */}
                     <button
-                      onClick={() => handleDelete(file.file_number)} // Pass file_number to handleDelete
-                      className="bg-red-500 text-white px-4 py-2 rounded-md flex items-center"
+                      onClick={() => handleDelete(design.id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
                     >
-                      <FaTrashAlt className="mr-2" /> Delete
+                      <FaTrashAlt size={18} />
                     </button>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p>No files found.</p>
-            )}
-          </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile view */}
+      <div className="md:hidden space-y-4">
+        {filteredDesigns.map((design, index) => (
+          <DesignCard key={design.id} design={design} index={index} />
+        ))}
+      </div>
+
+      {loading && (
+        <div className="flex justify-center items-center mt-4">
+          <div className="text-gray-600">Loading...</div>
         </div>
       )}
 
-      {/* Edit Modal (if editing) */}
-      {editingFile && (
-        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-xl w-full sm:w-96 max-w-lg transform transition-all">
-            <h3 className="text-2xl font-bold mb-6 text-center text-blue-600">
-              Edit File
-            </h3>
+      {!loading && filteredDesigns.length === 0 && (
+        <div className="text-center mt-4 p-4 bg-gray-50 rounded-lg">
+          <p className="text-gray-600">
+            {designs.length === 0
+              ? "No designs found"
+              : "No matching designs found"}
+          </p>
+        </div>
+      )}
 
-            {/* Design Input with Heading */}
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Stall Layout
-              </label>
-              <input
-                type="text"
-                placeholder="Design"
-                value={searchParams.design}
-                onChange={(e) =>
-                  setSearchParams({ ...searchParams, design: e.target.value })
-                }
-                className="border p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Front Input with Heading */}
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Front Size
-              </label>
-              <input
-                type="text"
-                placeholder="Front"
-                value={searchParams.front}
-                onChange={(e) =>
-                  setSearchParams({ ...searchParams, front: e.target.value })
-                }
-                className="border p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Depth Input with Heading */}
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Depth Size
-              </label>
-              <input
-                type="text"
-                placeholder="Depth"
-                value={searchParams.depth}
-                onChange={(e) =>
-                  setSearchParams({ ...searchParams, depth: e.target.value })
-                }
-                className="border p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Industry Input with Heading */}
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Industry
-              </label>
-              <input
-                type="text"
-                placeholder="Industry"
-                value={searchParams.industry}
-                onChange={(e) =>
-                  setSearchParams({ ...searchParams, industry: e.target.value })
-                }
-                className="border p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* File Inputs with Heading */}
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                3D File
-              </label>
-              <input
-                type="file"
-                accept=".max"
-                onChange={(e) => setNewFile1(e.target.files[0])}
-                className="mb-4"
-              />
-            </div>
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Jpeg File
-              </label>
-              <input
-                type="file"
-                accept="image/jpeg"
-                onChange={(e) => setNewFile2(e.target.files[0])}
-                className="mb-4"
-              />
-            </div>
-
-            {/* Save and Cancel buttons */}
-            <div className="flex justify-between items-center mt-6">
-              <button
-                onClick={() => handleEdit(editingFile)}
-                className="bg-blue-500 text-white px-6 py-3 rounded-md w-full sm:w-auto hover:bg-blue-600 transition duration-300"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setEditingFile(null)}
-                className="bg-gray-400 text-white px-6 py-3 rounded-md w-full sm:w-auto hover:bg-gray-500 transition duration-300"
-              >
-                Cancel
-              </button>
-            </div>
+      {/* Edit Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
+            <h2 className="text-xl font-heading mb-4">Edit Design</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-heading mb-2">
+                  Design
+                </label>
+                <input
+                  type="text"
+                  name="design"
+                  value={formData.design}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded font-body text-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-heading text-sm font-medium mb-2">
+                  Front Depth
+                </label>
+                <input
+                  type="text"
+                  name="front_depth"
+                  value={formData.front_depth}
+                  onChange={handleInputChange}
+                  className="w-full px-3 font-body py-2 border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-heading text-sm font-medium mb-2">
+                  Industry
+                </label>
+                <input
+                  type="text"
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 font-body border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-heading text-sm font-medium mb-2">
+                  Version
+                </label>
+                <input
+                  type="text"
+                  name="version"
+                  value={formData.version}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 font-body border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-heading text-sm font-medium mb-2">
+                  3D File
+                </label>
+                <input
+                  type="file"
+                  name="file1"
+                  accept=".max"
+                  onChange={handleFileChange}
+                  className="w-full px-3 py-2 font-body border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-heading font-medium mb-2">
+                  JPEG File
+                </label>
+                <input
+                  type="file"
+                  name="file2"
+                  accept="image/jpeg, image/jpg, image/png"
+                  onChange={handleFileChange}
+                  className="w-full px-3 py-2 border font-body rounded text-sm"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 font-heading text-gray-700 rounded text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 font-heading bg-blue-600 text-white rounded text-sm"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
 
-export default AdminPanel;
+export default DesignList;
