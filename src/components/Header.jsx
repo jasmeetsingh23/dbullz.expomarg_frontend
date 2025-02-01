@@ -1,13 +1,13 @@
 // import React, { useState } from "react";
 // import {
 //   FaCalendarAlt,
-//   FaCalculator,
 //   FaAddressBook,
 //   FaCube,
 //   FaEnvelope,
 //   FaSignOutAlt,
 //   FaBars,
 //   FaTimes,
+//   FaPenFancy,
 // } from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";
 // import Logo from "../assets/ex.png";
@@ -27,81 +27,96 @@
 //     { href: "/view", icon: FaCube, text: "3D Design" },
 //     { href: "/event", icon: FaCalendarAlt, text: "Event" },
 //     { href: "/inquiries2", icon: FaEnvelope, text: "Inquiries" },
-//     { href: "/welcome", icon: FaCalculator, text: "Calculator" },
+//     // { href: "/welcome", icon: FaCalculator, text: "Calculator" },
 //     { href: "/directory", icon: FaAddressBook, text: "Directory" },
+//     // { href: "/document", icon: FaFolder, text: "Document" },
+//     { href: "/proposal", icon: FaPenFancy, text: "Proposal" },
 //   ];
 
 //   const NavLink = ({ href, icon: Icon, text }) => (
 //     <a
 //       href={href}
-//       className="flex items-center font-body bg-white  text-[#91c848] px-4 py-2 rounded-full w-full md:w-auto justify-center whitespace-nowrap"
+//       className="flex items-center font-body hover:bg-gray-100 text-[#91c848] px-3 py-1.5 rounded-lg w-full transition-colors duration-200"
 //       onClick={() => setIsMenuOpen(false)}
 //     >
-//       <Icon className="mr-2 text-lg" /> {text}
+//       <Icon className="text-lg min-w-5" />
+//       <span className="ml-2 text-sm whitespace-nowrap">{text}</span>
 //     </a>
 //   );
 
 //   return (
-//     <header className="relative text-white p-2 shadow-lg bg-gradient-to-r from-[#91c848] to-[#4caf50]">
-//       <div className="max-w-screen-xl mx-auto">
-//         <div className="flex justify-between items-center">
+//     <header className="relative text-white shadow-lg bg-gradient-to-r from-[#91c848] to-[#4caf50]">
+//       <div className="max-w-screen-xl mx-auto px-4">
+//         <div className="flex justify-between items-center h-14 md:h-16">
 //           {/* Logo */}
-//           <div className="flex items-center space-x-3">
-//             <img src={Logo} alt="Logo" className="w-w-16 h-16 object-contain" />
+//           <div className="flex items-center">
+//             <img
+//               src={Logo}
+//               alt="Logo"
+//               className="h-8 md:h-12 w-auto object-contain"
+//             />
 //           </div>
 
 //           {/* Hamburger Menu Button */}
 //           <button
-//             className="md:hidden p-2 rounded-lg hover:bg-[#4caf50] transition-colors"
+//             className="md:hidden p-2 rounded-lg hover:bg-white/20 transition-colors"
 //             onClick={() => setIsMenuOpen(!isMenuOpen)}
 //             aria-label="Toggle menu"
 //           >
 //             {isMenuOpen ? (
-//               <FaTimes className="text-2xl" />
+//               <FaTimes className="text-xl text-white" />
 //             ) : (
-//               <FaBars className="text-2xl" />
+//               <FaBars className="text-xl text-white" />
 //             )}
 //           </button>
 
 //           {/* Desktop Navigation */}
-//           <nav className="hidden md:flex items-center space-x-4">
+//           <nav className="hidden md:flex items-center space-x-3">
 //             {menuItems.map((item) => (
-//               <NavLink key={item.href} {...item} />
+//               <a
+//                 key={item.href}
+//                 href={item.href}
+//                 className="flex items-center font-body bg-white hover:bg-gray-100 text-[#91c848] px-3 py-1.5 rounded-full transition-colors duration-200 text-sm whitespace-nowrap"
+//               >
+//                 <item.icon className="text-base" />
+//                 <span className="ml-2">{item.text}</span>
+//               </a>
 //             ))}
 //             {authToken && (
 //               <button
 //                 onClick={handleLogout}
-//                 className="flex items-center bg-white font-body  text-red-500 px-4 py-2 rounded-full"
+//                 className="flex items-center bg-white hover:bg-gray-100 font-body text-red-500 px-3 py-1.5 rounded-full transition-colors duration-200 text-sm whitespace-nowrap"
 //               >
-//                 <FaSignOutAlt className="mr-2 text-lg " /> Logout
+//                 <FaSignOutAlt className="text-base" />
+//                 <span className="ml-2">Logout</span>
 //               </button>
 //             )}
 //           </nav>
 //         </div>
 
 //         {/* Mobile Navigation */}
-//         <div
-//           className={`md:hidden absolute left-0 right-0 bg-white mt-4 px-4 py-2 shadow-lg space-y-2 transition-all duration-300 ease-in-out ${
-//             isMenuOpen
-//               ? "opacity-100 translate-y-0"
-//               : "opacity-0 -translate-y-2 pointer-events-none"
-//           }`}
-//           style={{
-//             zIndex: 50,
-//           }}
-//         >
-//           {menuItems.map((item) => (
-//             <NavLink key={item.href} {...item} />
-//           ))}
-//           {authToken && (
-//             <button
-//               onClick={handleLogout}
-//               className="flex items-center bg-white font-body  text-red-500 px-4 py-2 rounded-full w-full justify-center"
-//             >
-//               <FaSignOutAlt className="mr-2 text-lg" /> Logout
-//             </button>
-//           )}
-//         </div>
+//         {isMenuOpen && (
+//           <div
+//             className={`md:hidden fixed top-14 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ${
+//               isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+//             }`}
+//           >
+//             <nav className="flex flex-col p-3 space-y-1.5">
+//               {menuItems.map((item) => (
+//                 <NavLink key={item.href} {...item} />
+//               ))}
+//               {authToken && (
+//                 <button
+//                   onClick={handleLogout}
+//                   className="flex items-center font-body text-red-500 px-3 py-1.5 rounded-lg w-full hover:bg-gray-100 transition-colors duration-200 text-sm whitespace-nowrap"
+//                 >
+//                   <FaSignOutAlt className="text-lg min-w-5" />
+//                   <span className="ml-2">Logout</span>
+//                 </button>
+//               )}
+//             </nav>
+//           </div>
+//         )}
 //       </div>
 //     </header>
 //   );
@@ -110,20 +125,16 @@
 // export default Header;
 
 import React, { useState } from "react";
-import {
-  FaCalendarAlt,
-  FaCalculator,
-  FaAddressBook,
-  FaCube,
-  FaEnvelope,
-  FaSignOutAlt,
-  FaBars,
-  FaTimes,
-  FaFolder,
-  FaPenFancy,
-} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/ex.png";
+import CalendarImg from "../assets/t.png"; // Add the image
+import AddressBookImg from "../assets/d.png"; // Add the image
+import CubeImg from "../assets/3d.png"; // Add the image
+import EnvelopeImg from "../assets/i1.png"; // Add the image
+import PenFancyImg from "../assets/p.png"; // Add the image
+import SignOutImg from "../assets/p1.png"; // Add the image
+import BarImg from "../assets/h.png"; // Add hamburger image
+import TimesImg from "../assets/c3.png"; // Add close image
 
 const Header = () => {
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
@@ -137,22 +148,20 @@ const Header = () => {
   };
 
   const menuItems = [
-    { href: "/view", icon: FaCube, text: "3D Design" },
-    { href: "/event", icon: FaCalendarAlt, text: "Event" },
-    { href: "/inquiries2", icon: FaEnvelope, text: "Inquiries" },
-    // { href: "/welcome", icon: FaCalculator, text: "Calculator" },
-    { href: "/directory", icon: FaAddressBook, text: "Directory" },
-    // { href: "/document", icon: FaFolder, text: "Document" },
-    { href: "/proposal", icon: FaPenFancy, text: "Proposal" },
+    { href: "/view", img: CubeImg, text: "3D Design" },
+    { href: "/event", img: CalendarImg, text: "Event" },
+    { href: "/inquiries2", img: EnvelopeImg, text: "Inquiries" },
+    { href: "/directory", img: AddressBookImg, text: "Directory" },
+    { href: "/proposal", img: PenFancyImg, text: "Proposal" },
   ];
 
-  const NavLink = ({ href, icon: Icon, text }) => (
+  const NavLink = ({ href, img, text }) => (
     <a
       href={href}
       className="flex items-center font-body hover:bg-gray-100 text-[#91c848] px-3 py-1.5 rounded-lg w-full transition-colors duration-200"
       onClick={() => setIsMenuOpen(false)}
     >
-      <Icon className="text-lg min-w-5" />
+      <img src={img} alt={text} className="w-5 h-5" />
       <span className="ml-2 text-sm whitespace-nowrap">{text}</span>
     </a>
   );
@@ -176,11 +185,11 @@ const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? (
-              <FaTimes className="text-xl text-white" />
-            ) : (
-              <FaBars className="text-xl text-white" />
-            )}
+            <img
+              src={isMenuOpen ? TimesImg : BarImg}
+              alt={isMenuOpen ? "Close" : "Open Menu"}
+              className="w-6 h-6"
+            />
           </button>
 
           {/* Desktop Navigation */}
@@ -191,7 +200,7 @@ const Header = () => {
                 href={item.href}
                 className="flex items-center font-body bg-white hover:bg-gray-100 text-[#91c848] px-3 py-1.5 rounded-full transition-colors duration-200 text-sm whitespace-nowrap"
               >
-                <item.icon className="text-base" />
+                <img src={item.img} alt={item.text} className="w-5 h-5" />
                 <span className="ml-2">{item.text}</span>
               </a>
             ))}
@@ -200,7 +209,7 @@ const Header = () => {
                 onClick={handleLogout}
                 className="flex items-center bg-white hover:bg-gray-100 font-body text-red-500 px-3 py-1.5 rounded-full transition-colors duration-200 text-sm whitespace-nowrap"
               >
-                <FaSignOutAlt className="text-base" />
+                <img src={SignOutImg} alt="Logout" className="w-5 h-5" />
                 <span className="ml-2">Logout</span>
               </button>
             )}
@@ -223,7 +232,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="flex items-center font-body text-red-500 px-3 py-1.5 rounded-lg w-full hover:bg-gray-100 transition-colors duration-200 text-sm whitespace-nowrap"
                 >
-                  <FaSignOutAlt className="text-lg min-w-5" />
+                  <img src={SignOutImg} alt="Logout" className="w-5 h-5" />
                   <span className="ml-2">Logout</span>
                 </button>
               )}
