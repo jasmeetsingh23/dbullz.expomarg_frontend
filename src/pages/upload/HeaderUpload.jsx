@@ -3,19 +3,20 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
 import CircularLoadingOverlay from "../../components/CircularLoadingOverlay ";
 
-function Upload() {
+function HeaderUpload() {
   const [design, setDesign] = useState("");
   const [front, setFront] = useState("");
   const [depth, setDepth] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [industry, setIndustry] = useState("");
   const [version, setVersion] = useState("");
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
-
+  const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
@@ -68,10 +69,10 @@ function Upload() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
       {/* Your existing JSX */}
       <CircularLoadingOverlay isLoading={isUploading} />
-
       <div className="w-full px-4 py-6 md:px-6">
         <main className="flex flex-col items-center justify-center min-h-[80vh] text-center">
           <h2 className="text-2xl md:text-4xl font-heading  text-black mb-5 px-4">
@@ -213,8 +214,10 @@ function Upload() {
           </div>
         </main>
       </div>
+
+      <Footer />
     </div>
   );
 }
 
-export default Upload;
+export default HeaderUpload;

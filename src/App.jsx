@@ -260,6 +260,9 @@ import PrivateRoute from "./components/PrivateRoute ";
 import PrivateRoute2 from "./components/PrivateRoute2";
 import EventWish from "./pages/Event/EventWish";
 import Proposal from "./pages/Proposal/Proposal";
+import HeaderUpload from "./pages/upload/HeaderUpload";
+import HeaderAddEvent from "./pages/Event/HeaderAddEvent";
+import HeaderAddDirectory from "./pages/Directory/HeaderAddDirectory";
 
 function App() {
   return (
@@ -279,8 +282,16 @@ function App() {
           />
           <Route path="/view" element={<PrivateRoute element={ViewFiles} />} />
           <Route
+            path="/h-Upload"
+            element={<PrivateRoute element={HeaderUpload} />}
+          />
+          <Route
             path="/eventwish"
             element={<PrivateRoute element={EventWish} />}
+          />
+          <Route
+            path="/h-event"
+            element={<PrivateRoute element={HeaderAddEvent} />}
           />
           <Route
             path="/inquiries2"
@@ -289,6 +300,10 @@ function App() {
           <Route
             path="/directory"
             element={<PrivateRoute element={HeaderDirectory} />}
+          />
+          <Route
+            path="/h-add"
+            element={<PrivateRoute element={HeaderAddDirectory} />}
           />
           <Route
             path="/proposal"

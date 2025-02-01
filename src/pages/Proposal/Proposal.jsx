@@ -10,6 +10,7 @@ import pptDownloadIcon from "../../assets/k.png";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { FiSearch } from "react-icons/fi";
+import CircularLoadingOverlay from "../../components/CircularLoadingOverlay ";
 
 const ProposalList = () => {
   const [proposals, setProposals] = useState([]);
@@ -18,6 +19,7 @@ const ProposalList = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [currentProposal, setCurrentProposal] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     zip: null,
@@ -110,6 +112,7 @@ const ProposalList = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     const form = new FormData();
     form.append("title", formData.title);
     if (formData.zip) form.append("zip", formData.zip);
@@ -127,11 +130,14 @@ const ProposalList = () => {
     } catch (err) {
       console.error("Error updating proposal:", err);
       alert("Error updating proposal");
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     const form = new FormData();
     form.append("title", formData.title);
     if (formData.zip) form.append("zip", formData.zip);
@@ -152,6 +158,8 @@ const ProposalList = () => {
     } catch (err) {
       console.error("Error adding proposal:", err);
       alert("Error adding proposal");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -312,6 +320,7 @@ const ProposalList = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
+      <CircularLoadingOverlay isLoading={isUploading} />
       <div className="flex-grow p-4 md:p-8 bg-white">
         <div className="flex justify-between items-center mb-4 md:mb-6">
           <div className="flex-1 text-left"></div>

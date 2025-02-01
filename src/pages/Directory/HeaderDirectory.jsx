@@ -226,7 +226,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FiSearch } from "react-icons/fi";
+import { FiPlus, FiSearch } from "react-icons/fi";
 import { FiDownload, FiEye } from "react-icons/fi";
 import { BiSort, BiSortDown, BiSortUp } from "react-icons/bi";
 import Header from "../../components/Header";
@@ -336,9 +336,20 @@ const DirectoryPage = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <div className="flex-grow p-4 md:p-8">
-        <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
-          Exhibition Directory
-        </h1>
+        <div className="relative mb-6">
+          <h1 className="text-2xl md:text-3xl text-left md:text-center font-heading">
+            Exhibition Directory
+          </h1>
+
+          <div className="absolute right-0 top-1/2 -translate-y-1/2">
+            <a href="/h-add">
+              <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+                <FiPlus className="mr-1 md:mr-2 text-sm md:text-base" /> Add
+                Directory
+              </button>
+            </a>
+          </div>
+        </div>
 
         {/* Search Bar */}
         <div className="relative mb-6">

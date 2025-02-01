@@ -459,9 +459,18 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaDownload, FaEye, FaTimes } from "react-icons/fa";
+import { FaDownload, FaEye, FaPlus, FaTimes } from "react-icons/fa";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import i1 from "../../assets/i1.png";
+import c1 from "../../assets/c1.png";
+import t from "../../assets/t.png";
+import l from "../../assets/l.png";
+import c from "../../assets/c.png";
+import c2 from "../../assets/c2.png";
+import s from "../../assets/s.png";
+import s1 from "../../assets/s1.png";
+import StatusDropdown from "../../components/StatusDropdown";
 
 const HeaderInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -498,6 +507,31 @@ const HeaderInquiry = () => {
     setSelectedInquiry(null);
   };
 
+  const handleStatusChange = async (id, newStatus) => {
+    const formData = new FormData();
+    formData.append("status", newStatus);
+
+    try {
+      const response = await fetch(`https://expomarg.com/api/inquiry/${id}`, {
+        method: "PUT",
+        body: formData, // Use FormData as the body
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      // Update the status in the UI after a successful update
+      setInquiries((prev) =>
+        prev.map((inquiry) =>
+          inquiry.id === id ? { ...inquiry, status: newStatus } : inquiry
+        )
+      );
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
+  };
+
   // Card view for mobile screens
   const InquiryCard = ({ inquiry, index }) => (
     <div className="bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200">
@@ -519,19 +553,34 @@ const HeaderInquiry = () => {
           <p>
             <span className="font-heading">Event:</span> {inquiry.event_name}
           </p>
-          <p>
-            <span className="font-heading">Contact:</span>{" "}
-            {inquiry.contact_person}
-          </p>
+
           <p>
             <span className="font-heading">City:</span> {inquiry.venue_city}
           </p>
           <p>
-            <span className="font-heading">Date:</span> {inquiry.event_date}
+            <span className="font-heading">Date:</span>
+            {new Date(inquiry.event_date).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
           </p>
           <p>
             <span className="font-heading">Submitted:</span>{" "}
-            {new Date(inquiry.submission_time).toLocaleString()}
+            {new Date(inquiry.submission_time).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+          <p className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+            <span className="font-heading">Status:</span>
+            <div className="mt-2 sm:mt-0 sm:ml-2">
+              <StatusDropdown
+                value={inquiry.status || "Not Set"}
+                onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
+              />
+            </div>
           </p>
         </div>
       </div>
@@ -545,6 +594,14 @@ const HeaderInquiry = () => {
         <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
           Inquiries
         </h1>
+        <a href="/form" className="ml-auto">
+          <div className="flex justify-end mb-4 md:mb-0">
+            <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+              <FaPlus className="mr-1 md:mr-2 text-sm md:text-base" /> Add
+              Inquiries
+            </button>
+          </div>
+        </a>
 
         {loading && <p className="text-center">Loading inquiries...</p>}
         {error && <p className="text-[#2573b1] text-center">{error}</p>}
@@ -558,24 +615,69 @@ const HeaderInquiry = () => {
                   Sign No
                 </th>
                 <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={i1}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
+                  Inquiry By
+                </th>
+
+                <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={c1}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Company Name
                 </th>
                 <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={t}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Event Name
                 </th>
+
                 <th className="py-2 px-4 text-white border font-body text-sm">
-                  Contact Person
-                </th>
-                <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={l}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Venue City
                 </th>
                 <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={c}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Event Date
                 </th>
                 <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={c2}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Submission Time
                 </th>
                 <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={s1}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
+                  Status
+                </th>
+                <th className="py-2 px-4 text-white border font-body text-sm">
+                  <img
+                    src={s}
+                    alt="Inquiry By"
+                    className="w-6 h-6 inline-block mr-2"
+                  />
                   Action
                 </th>
               </tr>
@@ -587,23 +689,48 @@ const HeaderInquiry = () => {
                     {index + 1}
                   </td>
                   <td className="py-2 px-4 border font-body text-sm">
-                    {inquiry.company_name}
+                    {inquiry.inquiry_by}
                   </td>
+                  <td className="py-2 px-4 border font-body font-bold text-sm">
+                    {inquiry.company_name}{" "}
+                    <span className="text-red-500">({inquiry.stall_size})</span>
+                  </td>
+
                   <td className="py-2 px-4 border font-body text-sm">
                     {inquiry.event_name}
                   </td>
-                  <td className="py-2 px-4 border font-body text-sm">
-                    {inquiry.contact_person}
-                  </td>
+
                   <td className="py-2 px-4 border font-body text-sm">
                     {inquiry.venue_city}
                   </td>
                   <td className="py-2 px-4 border font-body text-sm">
-                    {inquiry.event_date}
+                    {new Date(inquiry.event_date).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </td>
+
                   <td className="py-2 px-4 border font-body text-sm">
-                    {new Date(inquiry.submission_time).toLocaleString()}
+                    {new Date(inquiry.submission_time).toLocaleDateString(
+                      "en-US",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
                   </td>
+
+                  <td className="py-2 px-4 border font-body text-sm">
+                    <StatusDropdown
+                      value={inquiry.status}
+                      onChange={(e) =>
+                        handleStatusChange(inquiry.id, e.target.value)
+                      }
+                    />
+                  </td>
+
                   <td className="py-2 px-4 border">
                     <button
                       onClick={() => handleView(inquiry)}
@@ -655,18 +782,12 @@ const HeaderInquiry = () => {
                       {selectedInquiry.company_name}
                     </div>
                     <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">
-                        Contact Person:
-                      </strong>{" "}
-                      {selectedInquiry.contact_person}
+                      <strong className="font-body text-sm">Website:</strong>{" "}
+                      {selectedInquiry.website}
                     </div>
                     <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Email:</strong>{" "}
-                      {selectedInquiry.contact_email}
-                    </div>
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Phone:</strong>{" "}
-                      {selectedInquiry.contact_number}
+                      <strong className="font-body text-sm">Stall Size:</strong>{" "}
+                      {selectedInquiry.stall_size}
                     </div>
                   </div>
 
@@ -684,18 +805,10 @@ const HeaderInquiry = () => {
                       <strong className="font-body text-sm">Event Date:</strong>{" "}
                       {selectedInquiry.event_date}
                     </div>
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Website:</strong>{" "}
-                      {selectedInquiry.website}
-                    </div>
                   </div>
 
                   {/* Requirements */}
                   <div className="space-y-2">
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Stall Size:</strong>{" "}
-                      {selectedInquiry.stall_size}
-                    </div>
                     <div className="p-2 bg-gray-50 rounded">
                       <strong className="font-body text-sm">Sides Open:</strong>{" "}
                       {selectedInquiry.sides_open_stall}
@@ -720,7 +833,7 @@ const HeaderInquiry = () => {
                     </div>
                     <div className="p-2 bg-gray-50 rounded">
                       <strong className="font-body text-sm">
-                        Specific Information :
+                        Specific Information:
                       </strong>{" "}
                       {selectedInquiry.specific_information}
                     </div>

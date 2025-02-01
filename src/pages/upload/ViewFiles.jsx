@@ -5,8 +5,8 @@ import {
   FaCube,
   FaArrowRight,
   FaDesktop,
-  FaSearch,
   FaDownload,
+  FaPlus,
 } from "react-icons/fa";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -201,6 +201,15 @@ function ViewFiles() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      {/* Upload Button fixed at the top right, hidden on mobile */}
+      <div className="fixed top-32 right-60 z-10 hidden lg:block">
+        <a href="/h-upload">
+          <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+            <FaPlus className="mr-2" />
+            Upload Design
+          </button>
+        </a>
+      </div>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-5xl mx-auto mb-12">

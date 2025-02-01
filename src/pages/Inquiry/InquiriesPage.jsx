@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaDownload, FaEye, FaTimes, FaEdit, FaTrash } from "react-icons/fa";
+import CircularLoadingOverlay from "../../components/CircularLoadingOverlay ";
 
 const HeaderInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -8,6 +9,7 @@ const HeaderInquiry = () => {
   const [error, setError] = useState("");
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updateFormData, setUpdateFormData] = useState(null);
   const [files, setFiles] = useState({
@@ -42,9 +44,7 @@ const HeaderInquiry = () => {
     setSelectedInquiry(inquiry);
     setUpdateFormData({
       companyName: inquiry.company_name,
-      contactPerson: inquiry.contact_person,
-      contactEmail: inquiry.contact_email,
-      contactNumber: inquiry.contact_number,
+      inquiryBy: inquiry.inquiry_by,
       website: inquiry.website,
       eventName: inquiry.event_name,
       venueCity: inquiry.venue_city,
@@ -80,6 +80,7 @@ const HeaderInquiry = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     const formData = new FormData();
 
     Object.keys(updateFormData).forEach((key) => {
@@ -108,6 +109,8 @@ const HeaderInquiry = () => {
     } catch (err) {
       console.error("Error updating inquiry:", err);
       setError("Failed to update inquiry.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -166,10 +169,10 @@ const HeaderInquiry = () => {
           <p>
             <span className="font-heading">Event:</span> {inquiry.event_name}
           </p>
-          <p>
+          {/* <p>
             <span className="font-heading">Contact:</span>{" "}
             {inquiry.contact_person}
-          </p>
+          </p> */}
           <p>
             <span className="font-heading">City:</span> {inquiry.venue_city}
           </p>
@@ -234,34 +237,38 @@ const HeaderInquiry = () => {
                   className="w-full p-2 border rounded"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Contact Person
+                  Inquiry By
                 </label>
                 <input
                   type="text"
-                  name="contactPerson"
-                  value={updateFormData?.contactPerson || ""}
+                  name="inquiryBy"
+                  value={updateFormData?.inquiryBy || ""}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  name="contactEmail"
-                  value={updateFormData?.contactEmail || ""}
+                <label className="block text-sm font-medium mb-1">
+                  Specific Information
+                </label>
+                <textarea
+                  name="specificInformation"
+                  value={updateFormData?.specificInformation || ""}
                   onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 border rounded h-24"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Phone</label>
+                <label className="block text-sm font-medium mb-1">
+                  Suggested Budget
+                </label>
                 <input
-                  type="tel"
-                  name="contactNumber"
-                  value={updateFormData?.contactNumber || ""}
+                  type="text"
+                  name="suggestedBudget"
+                  value={updateFormData?.suggestedBudget || ""}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded"
                 />
@@ -491,34 +498,6 @@ const HeaderInquiry = () => {
                 />
               </div>
             </div>
-
-            {/* Additional Information */}
-            <div className="space-y-2">
-              <h3 className="font-heading text-lg">Additional Information</h3>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Specific Information
-                </label>
-                <textarea
-                  name="specificInformation"
-                  value={updateFormData?.specificInformation || ""}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded h-24"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Suggested Budget
-                </label>
-                <input
-                  type="text"
-                  name="suggestedBudget"
-                  value={updateFormData?.suggestedBudget || ""}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </div>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">
@@ -543,6 +522,8 @@ const HeaderInquiry = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Your existing JSX */}
+      <CircularLoadingOverlay isLoading={isUploading} />
       <div className="flex-grow p-4 md:p-8">
         <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
           Inquiries
@@ -560,14 +541,15 @@ const HeaderInquiry = () => {
                   Sign No
                 </th>
                 <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                  Inquiry By
+                </th>
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
                   Company Name
                 </th>
                 <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
                   Event Name
                 </th>
-                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
-                  Contact Person
-                </th>
+
                 <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
                   Venue City
                 </th>
@@ -589,14 +571,15 @@ const HeaderInquiry = () => {
                     {index + 1}
                   </td>
                   <td className="py-2 px-4 border font-body text-sm">
+                    {inquiry.inquiry_by}
+                  </td>
+                  <td className="py-2 px-4 border font-body text-sm">
                     {inquiry.company_name}
                   </td>
                   <td className="py-2 px-4 border font-body text-sm">
                     {inquiry.event_name}
                   </td>
-                  <td className="py-2 px-4 border font-body text-sm">
-                    {inquiry.contact_person}
-                  </td>
+
                   <td className="py-2 px-4 border font-body text-sm">
                     {inquiry.venue_city}
                   </td>
@@ -676,7 +659,7 @@ const HeaderInquiry = () => {
                       </strong>{" "}
                       {selectedInquiry.company_name}
                     </div>
-                    <div className="p-2 bg-gray-50 rounded">
+                    {/* <div className="p-2 bg-gray-50 rounded">
                       <strong className="font-body text-sm">
                         Contact Person:
                       </strong>{" "}
@@ -689,6 +672,20 @@ const HeaderInquiry = () => {
                     <div className="p-2 bg-gray-50 rounded">
                       <strong className="font-body text-sm">Phone:</strong>{" "}
                       {selectedInquiry.contact_number}
+                    </div> */}
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Stall Size:</strong>{" "}
+                      {selectedInquiry.stall_size}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">Sides Open:</strong>{" "}
+                      {selectedInquiry.sides_open_stall}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Brand Color:
+                      </strong>{" "}
+                      {selectedInquiry.brand_color}
                     </div>
                   </div>
 
@@ -723,20 +720,6 @@ const HeaderInquiry = () => {
                   {/* Requirements */}
                   <div className="space-y-2">
                     <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Stall Size:</strong>{" "}
-                      {selectedInquiry.stall_size}
-                    </div>
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">Sides Open:</strong>{" "}
-                      {selectedInquiry.sides_open_stall}
-                    </div>
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">
-                        Brand Color:
-                      </strong>{" "}
-                      {selectedInquiry.brand_color}
-                    </div>
-                    <div className="p-2 bg-gray-50 rounded">
                       <strong className="font-body text-sm">
                         Size of Products:
                       </strong>{" "}
@@ -759,6 +742,12 @@ const HeaderInquiry = () => {
                         Suggested Budget:
                       </strong>{" "}
                       {selectedInquiry.suggested_budget}
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded">
+                      <strong className="font-body text-sm">
+                        Number of Products:
+                      </strong>{" "}
+                      {selectedInquiry.number_of_products}
                     </div>
                   </div>
 
@@ -791,12 +780,6 @@ const HeaderInquiry = () => {
                         Seating Requirement:
                       </strong>{" "}
                       {selectedInquiry.seating_requirements}
-                    </div>
-                    <div className="p-2 bg-gray-50 rounded">
-                      <strong className="font-body text-sm">
-                        Number of Products:
-                      </strong>{" "}
-                      {selectedInquiry.number_of_products}
                     </div>
                   </div>
                 </div>

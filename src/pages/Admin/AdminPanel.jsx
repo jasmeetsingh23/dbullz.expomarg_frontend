@@ -393,10 +393,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt, FaDownload, FaSearch } from "react-icons/fa";
+import CircularLoadingOverlay from "../../components/CircularLoadingOverlay ";
 
 const DesignList = () => {
   const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDesign, setCurrentDesign] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -473,6 +475,7 @@ const DesignList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     const form = new FormData();
     form.append("design", formData.design);
     form.append("front_depth", formData.front_depth);
@@ -492,6 +495,8 @@ const DesignList = () => {
     } catch (err) {
       console.error("Error updating design:", err);
       alert("Error updating design");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -571,6 +576,8 @@ const DesignList = () => {
 
   return (
     <div className="p-4 md:p-8 bg-white">
+      {/* Your existing JSX */}
+      <CircularLoadingOverlay isLoading={isUploading} />
       <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
         Design List
       </h1>

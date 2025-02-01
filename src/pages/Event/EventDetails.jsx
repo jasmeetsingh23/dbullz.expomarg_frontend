@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaCheckCircle, FaHeart, FaRegCircle } from "react-icons/fa";
+import { FaCheckCircle, FaHeart, FaPlus, FaRegCircle } from "react-icons/fa";
 import { BiSort, BiSortDown, BiSortUp } from "react-icons/bi";
 import { FiSearch } from "react-icons/fi";
 import Header from "../../components/Header";
@@ -191,11 +191,20 @@ const EventDetails = () => {
           <h1 className="text-2xl md:text-3xl text-center font-heading w-full">
             Event List
           </h1>
-          <a href="/EventWish" className="ml-auto">
-            <button className="bg-[#2573b1] text-white px-4 py-2 rounded-md ml-auto flex items-center">
-              <FaHeart className="mr-2" /> Wishlist
-            </button>
-          </a>
+          <div className="ml-auto flex gap-1 md:gap-2">
+            <a href="/h-event">
+              <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+                <FaPlus className="mr-1 md:mr-2 text-sm md:text-base" /> Add
+                Event
+              </button>
+            </a>
+            <a href="/EventWish">
+              <button className="bg-[#2573b1] hover:bg-[#1e5c8f] text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+                <FaHeart className="mr-1 md:mr-2 text-sm md:text-base" />{" "}
+                Wishlist
+              </button>
+            </a>
+          </div>
         </div>
 
         {/* Search Bar */}
