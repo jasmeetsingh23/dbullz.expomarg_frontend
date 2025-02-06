@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   FaFileAlt,
   FaCalendarAlt,
-  FaCalculator,
+  FaFileSignature,
   FaEnvelope,
   FaFolderOpen, // New icon for Directory
 } from "react-icons/fa";
@@ -146,7 +146,7 @@ const HomePage = () => {
           </button>
         </Link>
 
-        <Link to="/welcome">
+        <Link to="/proposal">
           <button
             className="font-heading"
             style={{
@@ -156,8 +156,8 @@ const HomePage = () => {
             onMouseEnter={() => setHoveredButton("welcome")}
             onMouseLeave={() => setHoveredButton(null)}
           >
-            <FaCalculator size={28} style={{ marginRight: "10px" }} />
-            Cost Calculation
+            <FaFileSignature size={28} style={{ marginRight: "10px" }} />
+            Proposal
           </button>
         </Link>
       </div>

@@ -153,8 +153,12 @@
 
 // export default SearchBar;
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { AiOutlineAppstore } from "react-icons/ai";
+import { TbRulerMeasure } from "react-icons/tb"; // Import a measurement-related icon
+import { LiaIndustrySolid } from "react-icons/lia";
+import { FaSearch } from "react-icons/fa"; // Import search icon
 
 const SearchBar = ({
   searchParams,
@@ -171,6 +175,7 @@ const SearchBar = ({
         {/* Select Stall Layout */}
         <div className="w-full md:w-[25%]">
           <h2 className="font-heading text-sm text-black mb-2">
+            <AiOutlineAppstore className="inline-block mr-2 text-lg" />
             Select Stall Layout
           </h2>
           <div
@@ -223,6 +228,8 @@ const SearchBar = ({
         {/* Enter Stall Size */}
         <div className="w-full md:w-[25%]">
           <h2 className="font-heading text-sm text-black mb-2">
+            <TbRulerMeasure className="inline-block mr-2 text-lg" />{" "}
+            {/* Add icon */}
             Enter Stall Size (In Meters)
           </h2>
           <div className="flex items-center space-x-2">
@@ -267,6 +274,8 @@ const SearchBar = ({
         {/* Select Industry */}
         <div className="w-full md:w-[25%]">
           <h2 className="font-heading text-sm text-black mb-2">
+            <LiaIndustrySolid className="inline-block mr-2 text-lg" />{" "}
+            {/* Add icon */}
             Select Industry (Optional)
           </h2>
           <div className="relative">
@@ -302,8 +311,9 @@ const SearchBar = ({
         <div className="w-full md:w-[25%]">
           <button
             onClick={handleSearch}
-            className="bg-gradient-to-r from-[#91c848] to-[#4caf50] text-white rounded-md w-full font-heading text-sm transition-all duration-300 h-10"
+            className="bg-gradient-to-r from-[#91c848] to-[#4caf50] text-white rounded-md w-full font-heading text-sm transition-all duration-300 h-10 flex items-center justify-center gap-2"
           >
+            <FaSearch className="text-base" /> {/* Add search icon */}
             Search
           </button>
         </div>

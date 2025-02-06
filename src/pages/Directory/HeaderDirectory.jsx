@@ -226,9 +226,18 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { FiDownload, FiEye } from "react-icons/fi";
+import { IoIosPaper } from "react-icons/io";
 import { BiSort, BiSortDown, BiSortUp } from "react-icons/bi";
+import { FaIdCardAlt } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaFileAlt,
+} from "react-icons/fa";
+import { IoCloudUploadOutline } from "react-icons/io5"; // Import a better upload icon
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -338,14 +347,16 @@ const DirectoryPage = () => {
       <div className="flex-grow p-4 md:p-8">
         <div className="relative mb-6">
           <h1 className="text-2xl md:text-3xl text-left md:text-center font-heading">
+            <IoIosPaper className="inline-block mr-2" />{" "}
+            {/* Add icon before text */}
             Exhibition Directory
           </h1>
 
           <div className="absolute right-0 top-1/2 -translate-y-1/2">
             <a href="/h-add">
               <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
-                <FiPlus className="mr-1 md:mr-2 text-sm md:text-base" /> Add
-                Directory
+                <IoCloudUploadOutline className="mr-1 md:mr-2 text-sm md:text-base" />{" "}
+                Upload Directory
               </button>
             </a>
           </div>
@@ -381,15 +392,18 @@ const DirectoryPage = () => {
             <thead>
               <tr className="bg-[#2573b1]">
                 <th className="py-3 px-4 text-white font-body text-sm">
-                  Sign No.
+                  <FaIdCardAlt className="w-6 h-6 inline-block mr-2" />
+                  Sign No
                 </th>
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaBuilding className="w-6 h-6 inline-block mr-2" />
                   Exhibition Name
                 </th>
                 <th
-                  className="py-3 px-4 text-white font-body text-sm cursor-pointer flex items-center gap-2"
+                  className="py-3 px-4 text-white font-body text-sm cursor-pointer flex items-center gap-2 border-none"
                   onClick={sortDirectoriesByYear}
                 >
+                  <FaCalendarAlt size={18} />
                   <span>Year</span>
                   {sortOrder === "none" && <BiSort size={18} />}
                   {sortOrder === "ascending" && <BiSortUp size={18} />}
@@ -397,9 +411,12 @@ const DirectoryPage = () => {
                 </th>
 
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaMapMarkerAlt className="w-6 h-6 inline-block mr-2" />
                   Venue
                 </th>
+
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaFileAlt className="w-6 h-6 inline-block mr-2" />
                   Document
                 </th>
               </tr>

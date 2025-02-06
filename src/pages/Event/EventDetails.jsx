@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaCheckCircle, FaHeart, FaPlus, FaRegCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaHeart,
+  FaRegCircle,
+  FaCalendarAlt,
+  FaBuilding,
+  FaCity,
+  FaFolder,
+  FaUsers,
+} from "react-icons/fa";
 import { BiSort, BiSortDown, BiSortUp } from "react-icons/bi";
+import { IoCloudUploadOutline } from "react-icons/io5"; // Import a better upload icon
 import { FiSearch } from "react-icons/fi";
+import { FaIdCardAlt } from "react-icons/fa";
+import { FaMapMarkerAlt } from "react-icons/fa"; // Import location marker icon
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import g from "../../assets/g.png";
+import t from "../../assets/t.png";
+import l from "../../assets/l.png";
+import c4 from "../../assets/c4.png";
+import d from "../../assets/d.png";
+import h1 from "../../assets/h1.png";
+import c2 from "../../assets/c2.png";
 
 const EventDetails = () => {
   const [events, setEvents] = useState([]);
@@ -188,14 +207,15 @@ const EventDetails = () => {
       <Header />
       <div className="flex-grow p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl md:text-3xl text-center font-heading w-full">
+          <h1 className="text-2xl md:text-3xl text-center font-heading w-full flex items-center justify-center gap-2">
+            <FaCalendarAlt className="text-2xl" />
             Event List
           </h1>
           <div className="ml-auto flex gap-1 md:gap-2">
             <a href="/h-event">
               <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
-                <FaPlus className="mr-1 md:mr-2 text-sm md:text-base" /> Add
-                Event
+                <IoCloudUploadOutline className="mr-1 md:mr-2 text-sm md:text-base" />{" "}
+                Upload Event
               </button>
             </a>
             <a href="/EventWish">
@@ -236,10 +256,12 @@ const EventDetails = () => {
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
             <thead>
               <tr className="bg-[#2573b1]">
-                <th className="py-3 px-4 text-white font-body text-sm">
+                <th className="py-3 px-4 text-white font-body text-sm ">
+                  <FaIdCardAlt className="w-6 h-6 inline-block mr-2 text-white" />
                   Sign No.
                 </th>
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaBuilding className="w-6 h-6 inline-block mr-2 text-white" />
                   Exhibition Name
                 </th>
                 <th
@@ -247,6 +269,8 @@ const EventDetails = () => {
                   onClick={() => handleSort("start_date")}
                 >
                   <div className="flex items-center justify-center">
+                    <FaCalendarAlt className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                    {/* Replaced image with icon */}
                     Start Date {getSortIcon("start_date")}
                   </div>
                 </th>
@@ -255,25 +279,39 @@ const EventDetails = () => {
                   onClick={() => handleSort("end_date")}
                 >
                   <div className="flex items-center justify-center">
+                    <FaCalendarAlt className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                    {/* Replaced image with icon */}
                     End Date {getSortIcon("end_date")}
                   </div>
                 </th>
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaMapMarkerAlt className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                  {/* Replaced image with icon */}
                   Venue
                 </th>
-                <th className="py-3 px-4 text-white font-body text-sm">City</th>
+                <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaCity className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                  {/* Replaced image with icon */}
+                  City
+                </th>
                 <th
                   className="py-3 px-4 text-white font-body text-sm cursor-pointer"
                   onClick={() => handleSort("directory_available")}
                 >
                   <div className="flex items-center justify-center">
+                    <FaFolder className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                    {/* Replaced image with icon */}
                     Directory {getSortIcon("directory_available")}
                   </div>
                 </th>
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaUsers className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                  {/* Replaced image with icon */}
                   Existing Clients
                 </th>
                 <th className="py-3 px-4 text-white font-body text-sm">
+                  <FaCheckCircle className="w-6 h-6 inline-block mr-2 text-white" />{" "}
+                  {/* Replaced image with icon */}
                   Status
                 </th>
               </tr>

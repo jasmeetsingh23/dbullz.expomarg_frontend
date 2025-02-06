@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaDownload, FaEye, FaTimes, FaEdit, FaTrash } from "react-icons/fa";
+import {
+  FaDownload,
+  FaIdCardAlt,
+  FaEye,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+} from "react-icons/fa";
 import CircularLoadingOverlay from "../../components/CircularLoadingOverlay ";
 
 const HeaderInquiry = () => {

@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaEdit, FaTrashAlt, FaPlus, FaFileAlt } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaFileAlt,
+  FaFileSignature,
+  FaIdCardAlt,
+  FaRegClock,
+  FaBuilding,
+  FaRegFilePowerpoint,
+  FaFilePdf,
+  FaRegEdit,
+} from "react-icons/fa";
+import { AiOutlineFileZip } from "react-icons/ai";
+import { IoCloudUploadOutline } from "react-icons/io5"; // Import a better upload icon
 import zipIcon from "../../assets/zip.png";
 import pdfIcon from "../../assets/pdf.png";
 import pptIcon from "../../assets/ppt.png";
@@ -325,6 +338,7 @@ const ProposalList = () => {
         <div className="flex justify-between items-center mb-4 md:mb-6">
           <div className="flex-1 text-left"></div>
           <h1 className="text-lg md:text-3xl text-center font-heading">
+            <FaFileSignature className="inline-block mr-2" />
             Proposals List
           </h1>
           <div className="flex-1 flex justify-end">
@@ -341,8 +355,8 @@ const ProposalList = () => {
                 }}
                 className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-blue-600 text-white rounded font-heading text-xs md:text-sm hover:bg-blue-700 transition-colors"
               >
-                <FaPlus className="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4" />
-                <span className="hidden md:inline">Add Proposal</span>
+                <IoCloudUploadOutline className="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4" />
+                <span className="hidden md:inline">Upload Proposal</span>
                 <span className="md:hidden">Add</span>
               </button>
 
@@ -379,28 +393,35 @@ const ProposalList = () => {
         <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
           <table className="min-w-full">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
-                  S.No
+              <tr className="bg-[#2573b1]">
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-white  tracking-wider">
+                  <FaIdCardAlt className="inline-block mr-2 w-6 h-6" />
+                  Sign No.
                 </th>
-                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-white tracking-wider">
+                  <FaRegClock className="inline-block mr-2 w-6 h-6" />
                   Date/Time
                 </th>
-                <th className="py-3 px-4 border-b text-left text-xs font-heading text-black uppercase tracking-wider">
-                  COMPANY NAME
+                <th className="py-3 px-4 border-b text-left text-xs font-heading text-white tracking-wider">
+                  <FaBuilding className="inline-block mr-2 w-6 h-6" />
+                  Company Name
                 </th>
 
-                <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                <th className="py-3 px-4 border-b text-center text-xs font-heading text-white tracking-wider">
+                  <AiOutlineFileZip className="inline-block mr-2 w-6 h-6" />
                   ZIP File
                 </th>
-                <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                <th className="py-3 px-4 border-b text-center text-xs font-heading text-white tracking-wider">
+                  <FaRegFilePowerpoint className="inline-block mr-2 w-6 h-6" />
                   PPT File
                 </th>
-                <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                <th className="py-3 px-4 border-b text-center text-xs font-heading text-white tracking-wider">
+                  <FaFilePdf className="inline-block mr-2 w-6 h-6" />
                   PDF File
                 </th>
 
-                <th className="py-3 px-4 border-b text-center text-xs font-heading text-black uppercase tracking-wider">
+                <th className="py-3 px-4 border-b text-center text-xs font-heading text-white tracking-wider">
+                  <FaRegEdit className="inline-block mr-2 w-6 h-6" />
                   Actions
                 </th>
               </tr>

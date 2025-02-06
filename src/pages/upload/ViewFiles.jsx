@@ -6,8 +6,14 @@ import {
   FaArrowRight,
   FaDesktop,
   FaDownload,
-  FaPlus,
+  FaPaintBrush,
+  FaFileInvoice,
+  FaCodeBranch,
 } from "react-icons/fa";
+import { IoCloudUploadOutline } from "react-icons/io5"; // Import a better upload icon
+import { FiFileText } from "react-icons/fi"; // Import a file-related icon
+import { LiaIndustrySolid } from "react-icons/lia";
+import { TbRuler } from "react-icons/tb";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchBar from "../../components/SearchBar";
@@ -145,7 +151,8 @@ function ViewFiles() {
           )}
           <div className="lg:w-1/2 p-6 lg:p-8">
             <div className="mb-6">
-              <h3 className="text-2xl font-medium text-gray-900 mb-2">
+              <h3 className="text-2xl font-medium text-gray-900 mb-2 flex items-center gap-2">
+                <FiFileText className="text-lg" /> {/* Add icon */}
                 {file.design}
               </h3>
               <div className="h-1 w-20 bg-[#91c848] mb-4"></div>
@@ -153,25 +160,29 @@ function ViewFiles() {
 
             <div className="space-y-4 text-gray-600">
               <div>
-                <h4 className=" font-heading font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                  <FaFileInvoice className="text-lg" /> {/* Add icon */}
                   File Number
                 </h4>
                 <p className="mt-1 font-body">{file.file_number}</p>
               </div>
               <div>
-                <h4 className=" font-heading font-bold  uppercase tracking-wider text-gray-500">
+                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                  <LiaIndustrySolid className="text-lg" />
                   Industry
                 </h4>
                 <p className="mt-1 font-body">{file.industry}</p>
               </div>
               <div>
-                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                  <FaCodeBranch className="text-lg" />
                   Version
                 </h4>
                 <p className="mt-1 font-body">{file.version}</p>
               </div>
               <div>
-                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500">
+                <h4 className="font-heading font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                  <TbRuler className="text-lg" />
                   Dimensions
                 </h4>
                 <p className="mt-1 font-body">{file.front_depth}</p>
@@ -202,10 +213,10 @@ function ViewFiles() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       {/* Upload Button fixed at the top right, hidden on mobile */}
-      <div className="fixed top-32 right-60 z-10 hidden lg:block">
+      <div className="absolute top-32 right-60 z-10 hidden lg:block">
         <a href="/h-upload">
-          <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
-            <FaPlus className="mr-2" />
+          <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-3 md:px-5 py-2 md:py-3 rounded-md flex items-center gap-2 transition-all duration-300">
+            <IoCloudUploadOutline className="text-lg" /> {/* Updated icon */}
             Upload Design
           </button>
         </a>
@@ -244,6 +255,8 @@ function ViewFiles() {
           <section className="mb-16">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-heading text-gray-900">
+                <FaPaintBrush className="w-12 h-12 inline-block mr-2 text-[#91c848]" />{" "}
+                {/* Replace image with icon */}
                 Recent Designs
               </h2>
               <div className="h-px flex-1 bg-gray-200 mx-4"></div>
