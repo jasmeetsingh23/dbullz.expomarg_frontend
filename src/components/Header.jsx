@@ -9,6 +9,7 @@ import {
   FaTimes,
   FaPenFancy,
 } from "react-icons/fa";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/ex.png";
 
@@ -31,6 +32,11 @@ const Header = () => {
     { href: "/directory", icon: FaAddressBook, text: "Directory" },
     // { href: "/document", icon: FaFolder, text: "Document" },
     { href: "/proposal", icon: FaPenFancy, text: "Proposal" },
+    {
+      href: "/Stalldocument",
+      icon: IoDocumentTextOutline,
+      text: "Stall Document",
+    },
   ];
 
   const NavLink = ({ href, icon: Icon, text }) => (

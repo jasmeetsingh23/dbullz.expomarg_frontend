@@ -15,6 +15,7 @@ import {
   FaRegEdit,
 } from "react-icons/fa";
 import { IoCloudUploadOutline } from "react-icons/io5"; // Import a better upload icon
+import { FiSearch } from "react-icons/fi";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import StatusDropdown from "../../components/StatusDropdown";
@@ -25,6 +26,8 @@ const HeaderInquiry = () => {
   const [error, setError] = useState("");
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filter, setFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchInquiries();
@@ -79,6 +82,56 @@ const HeaderInquiry = () => {
     }
   };
 
+  // Function to check if a value matches any of the search terms
+  const matchesSearchTerms = (value, searchTerms) => {
+    if (!value) return false;
+    value = value.toLowerCase();
+    return searchTerms.some((term) => value.includes(term));
+  };
+
+  // Function to filter inquiries based on search term
+  const filteredInquiries = inquiries.filter((inquiry) => {
+    if (!searchTerm.trim()) return true;
+
+    // Split search input into individual terms and remove empty strings
+    const searchTerms = searchTerm
+      .toLowerCase()
+      .split(" ")
+      .filter((term) => term);
+
+    const searchValue = searchTerm.toLowerCase();
+    // Format dates once for comparison
+    const eventDate = new Date(inquiry.event_date)
+      .toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+      .toLowerCase();
+
+    const submissionTime = new Date(inquiry.submission_time)
+      .toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+      .toLowerCase();
+
+    // Check each field against all search terms
+    return searchTerms.every((term) => {
+      return (
+        matchesSearchTerms(inquiry.inquiry_by?.toLowerCase(), [term]) ||
+        matchesSearchTerms(inquiry.company_name?.toLowerCase(), [term]) ||
+        matchesSearchTerms(inquiry.event_name?.toLowerCase(), [term]) ||
+        matchesSearchTerms(inquiry.venue_city?.toLowerCase(), [term]) ||
+        matchesSearchTerms(eventDate, [term]) ||
+        matchesSearchTerms(submissionTime, [term]) ||
+        matchesSearchTerms(inquiry.status?.toLowerCase(), [term]) ||
+        matchesSearchTerms(inquiry.stall_size?.toLowerCase(), [term])
+      );
+    });
+  });
+
   // Card view for mobile screens
   const InquiryCard = ({ inquiry, index }) => (
     <div className="bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200">
@@ -120,7 +173,7 @@ const HeaderInquiry = () => {
               year: "numeric",
             })}
           </p>
-          <p className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
             <span className="font-heading">Status:</span>
             <div className="mt-2 sm:mt-0 sm:ml-2">
               <StatusDropdown
@@ -128,29 +181,75 @@ const HeaderInquiry = () => {
                 onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
               />
             </div>
-          </p>
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <div className="flex-grow p-4 md:p-8">
-        <h1 className="text-2xl md:text-3xl mb-6 text-center font-heading">
-          <FaEnvelope className="inline-block mr-2" />{" "}
-          {/* Add icon before text */}
-          Inquiries
-        </h1>
-        <a href="/form" className="ml-auto">
-          <div className="flex justify-end mb-4 md:mb-0">
-            <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
-              <IoCloudUploadOutline className="mr-1 md:mr-2 text-sm md:text-base" />{" "}
-              Add Inquiries
-            </button>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl md:text-3xl text-center font-heading w-full flex items-center justify-center gap-2">
+            <FaEnvelope className="text-2xl" />
+            Inquiries
+          </h1>
+          <div className="ml-auto flex gap-1 md:gap-2">
+            <a href="/form">
+              <button className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-base px-2 md:px-4 py-1 md:py-2 rounded-md flex items-center whitespace-nowrap">
+                <IoCloudUploadOutline className="mr-1 md:mr-2 text-sm md:text-base" />{" "}
+                Add Inquiries
+              </button>
+            </a>
           </div>
-        </a>
+        </div>
+
+        {/* Enhanced Search Bar with better description */}
+        <div className="relative mt-10 mb-4">
+          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search with multiple terms (e.g. 'company:ABC city:New York status:pending')"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#2573b1] focus:border-[#2573b1]"
+          />
+          {searchTerm && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
+              >
+                <FaTimes />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Add search tips */}
+        {searchTerm && (
+          <div className="text-sm text-gray-600 mb-4">
+            <p className="text-red-500 font-heading text-xs">
+              Tip: Use space to separate multiple search terms. Each term will
+              filter across all fields.
+            </p>
+          </div>
+        )}
+
+        {loading && (
+          <div className="text-center py-8">
+            <p className="text-gray-600">Loading events...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-8">
+            <p className="text-red-500">{error}</p>
+          </div>
+        )}
 
         {loading && <p className="text-center">Loading inquiries...</p>}
         {error && <p className="text-[#2573b1] text-center">{error}</p>}
@@ -210,7 +309,7 @@ const HeaderInquiry = () => {
               </tr>
             </thead>
             <tbody>
-              {inquiries.map((inquiry, index) => (
+              {filteredInquiries.map((inquiry, index) => (
                 <tr key={inquiry.id} className="text-center">
                   <td className="py-2 px-4 border font-body text-sm">
                     {index + 1}
@@ -274,7 +373,7 @@ const HeaderInquiry = () => {
 
         {/* Mobile card view */}
         <div className="md:hidden space-y-4">
-          {inquiries.map((inquiry, index) => (
+          {filteredInquiries.map((inquiry, index) => (
             <InquiryCard key={inquiry.id} inquiry={inquiry} index={index} />
           ))}
         </div>

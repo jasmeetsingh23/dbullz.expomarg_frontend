@@ -269,7 +269,7 @@ const Sidebar = () => {
         {/* Logo Area */}
         <div className="h-16 flex items-center justify-between px-4 border-b">
           <img
-            src="https://www.w3schools.com/w3images/avatar2.png" // Replace with your admin avatar image
+            src="https://www.w3schools.com/w3images/avatar2.png"
             alt="Admin Avatar"
             className="w-12 h-12 mt-5 ml-6 rounded-full border-4 border-[#2573b1] mb-4"
           />

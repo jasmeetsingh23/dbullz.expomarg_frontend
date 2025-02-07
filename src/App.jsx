@@ -263,6 +263,7 @@ import Proposal from "./pages/Proposal/Proposal";
 import HeaderUpload from "./pages/upload/HeaderUpload";
 import HeaderAddEvent from "./pages/Event/HeaderAddEvent";
 import HeaderAddDirectory from "./pages/Directory/HeaderAddDirectory";
+import StallDocument from "./pages/StallDocument/StallDocument";
 
 function App() {
   return (
@@ -308,6 +309,10 @@ function App() {
           <Route
             path="/proposal"
             element={<PrivateRoute element={Proposal} />}
+          />
+          <Route
+            path="/Stalldocument"
+            element={<PrivateRoute element={StallDocument} />}
           />
           <Route
             path="/event"
