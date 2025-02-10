@@ -142,17 +142,19 @@ const EditModal = ({ isOpen, onClose, stallData, onUpdate }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-heading mb-2">
-                DD Number
-              </label>
-              <input
-                type="text"
+              <label className="block text-sm font-heading mb-2">DD</label>
+              <select
                 name="dd"
                 value={formData.dd}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded"
-              />
+              >
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
             </div>
+
             <div>
               <label className="block text-sm font-heading mb-2">DD Cost</label>
               <input
@@ -533,17 +535,19 @@ const StallDocuments = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-heading mb-2">
-                  DD Number
-                </label>
-                <input
-                  type="text"
+                <label className="block text-sm font-heading mb-2">DD</label>
+                <select
                   name="dd"
                   value={formData.dd}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border rounded"
-                />
+                >
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               </div>
+
               <div>
                 <label className="block text-sm font-heading mb-2">
                   DD Cost
