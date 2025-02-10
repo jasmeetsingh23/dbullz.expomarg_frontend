@@ -1,5 +1,10 @@
 // import React from "react";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import {
+//   BrowserRouter as Router,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
 // import { AuthProvider } from "./contexts/AuthContext"; // AuthContext to provide authentication state
 // import { TotalCostProvider } from "./contexts/TotalCostContext"; // TotalCostProvider for the calculator routes
 
@@ -29,13 +34,20 @@
 // import MaterialCost from "./pages/Calculator/MaterialCost";
 // import FinalCost from "./pages/Calculator/FinalCost";
 // import CalculatorPanel from "./pages/Calculator/CalculatorPanel";
+// import SidebarEvent from "./pages/Event/SidebarEvent";
+
+// // Import the Sidebar component
+// import Sidebar from "./pages/sidebar/Sidebar";
 
 // // Import the PrivateRoute component for protecting routes
 // import PrivateRoute from "./components/PrivateRoute ";
 // import PrivateRoute2 from "./components/PrivateRoute2";
-
-// import SidebarEvent from "./pages/Event/SidebarEvent";
-// import Landing from "./pages/Home/Landing";
+// import EventWish from "./pages/Event/EventWish";
+// import Proposal from "./pages/Proposal/Proposal";
+// import HeaderUpload from "./pages/upload/HeaderUpload";
+// import HeaderAddEvent from "./pages/Event/HeaderAddEvent";
+// import HeaderAddDirectory from "./pages/Directory/HeaderAddDirectory";
+// import StallDocument from "./pages/StallDocument/StallDocument";
 
 // function App() {
 //   return (
@@ -46,47 +58,25 @@
 //           <Route path="/" element={<Login />} />
 //           <Route path="/signup" element={<Signup />} />
 //           <Route path="/adminlogin" element={<AdminLogin />} />
-//           <Route path="/land" element={<Landing />} />
 
 //           {/* Protected Routes (Requires Authentication) */}
 //           <Route path="/home" element={<PrivateRoute element={HomePage} />} />
-//           <Route path="/view" element={<PrivateRoute element={ViewFiles} />} />
-//           <Route path="/upload" element={<PrivateRoute2 element={Upload} />} />
-//           <Route
-//             path="/admin"
-//             element={<PrivateRoute2 element={AdminPanel} />}
-//           />
-//           <Route
-//             path="/dashboard"
-//             element={<PrivateRoute2 element={AdminDashboard} />}
-//           />
 //           <Route
 //             path="/form"
 //             element={<PrivateRoute element={InquiryForm} />}
 //           />
+//           <Route path="/view" element={<PrivateRoute element={ViewFiles} />} />
 //           <Route
-//             path="/inquiries"
-//             element={<PrivateRoute2 element={InquiriesPage} />}
+//             path="/h-Upload"
+//             element={<PrivateRoute element={HeaderUpload} />}
 //           />
 //           <Route
-//             path="/add-directory"
-//             element={<PrivateRoute2 element={AddDirectory} />}
+//             path="/eventwish"
+//             element={<PrivateRoute element={EventWish} />}
 //           />
 //           <Route
-//             path="/view-directory"
-//             element={<PrivateRoute2 element={viewDirectory} />}
-//           />
-//           <Route
-//             path="/events"
-//             element={<PrivateRoute2 element={UpcomingEvents} />}
-//           />
-//           <Route
-//             path="/s-event"
-//             element={<PrivateRoute2 element={SidebarEvent} />}
-//           />
-//           <Route
-//             path="/event"
-//             element={<PrivateRoute element={EventDetails} />}
+//             path="/h-event"
+//             element={<PrivateRoute element={HeaderAddEvent} />}
 //           />
 //           <Route
 //             path="/inquiries2"
@@ -96,17 +86,155 @@
 //             path="/directory"
 //             element={<PrivateRoute element={HeaderDirectory} />}
 //           />
+//           <Route
+//             path="/h-add"
+//             element={<PrivateRoute element={HeaderAddDirectory} />}
+//           />
+//           <Route
+//             path="/proposal"
+//             element={<PrivateRoute element={Proposal} />}
+//           />
+//           <Route
+//             path="/Stalldocument"
+//             element={<PrivateRoute element={StallDocument} />}
+//           />
+//           <Route
+//             path="/event"
+//             element={<PrivateRoute element={EventDetails} />}
+//           />
+
+//           {/* Pages with Sidebar Layout */}
+//           <Route
+//             path="/upload"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <Upload />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/admin"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <AdminPanel />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/dashboard"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <AdminDashboard />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/inquiries"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <InquiriesPage />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/add-directory"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <AddDirectory />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/view-directory"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <ViewDirectory />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/events"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <UpcomingEvents />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
+//           <Route
+//             path="/s-event"
+//             element={
+//               <PrivateRoute2
+//                 element={() => (
+//                   <div className="flex">
+//                     <Sidebar />
+//                     <main className="lg:ml-64 flex-1 min-h-screen transition-colors duration-200">
+//                       <SidebarEvent />
+//                     </main>
+//                   </div>
+//                 )}
+//               />
+//             }
+//           />
 
 //           {/* Calculator Routes Wrapped in TotalCostProvider */}
 //           <Route
 //             path="/Welcome"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <WelcomePage />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -114,11 +242,11 @@
 //             path="/labour"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <LabourAndSupervisorCharges />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -126,11 +254,11 @@
 //             path="/lighting"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <LightingAndElectrician />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -138,11 +266,11 @@
 //             path="/flooring"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <Flooring />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -150,11 +278,11 @@
 //             path="/furniture"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <Furniture />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -162,11 +290,11 @@
 //             path="/transportation"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <Transportation />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -174,11 +302,11 @@
 //             path="/material"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <MaterialCost />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -186,11 +314,11 @@
 //             path="/final"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <FinalCost />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
@@ -198,14 +326,17 @@
 //             path="/calculator"
 //             element={
 //               <PrivateRoute
-//                 element={() => (
+//                 element={
 //                   <TotalCostProvider>
 //                     <CalculatorPanel />
 //                   </TotalCostProvider>
-//                 )}
+//                 }
 //               />
 //             }
 //           />
+
+//           {/* Default Route */}
+//           <Route path="*" element={<Navigate to="/" replace />} />
 //         </Routes>
 //       </Router>
 //     </AuthProvider>
@@ -264,6 +395,9 @@ import HeaderUpload from "./pages/upload/HeaderUpload";
 import HeaderAddEvent from "./pages/Event/HeaderAddEvent";
 import HeaderAddDirectory from "./pages/Directory/HeaderAddDirectory";
 import StallDocument from "./pages/StallDocument/StallDocument";
+
+// Import ChatBot component
+import ChatBot from "./components/ChatBot"; // Import ChatBot
 
 function App() {
   return (
@@ -554,6 +688,7 @@ function App() {
           {/* Default Route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <ChatBot /> {/* Add ChatBot here */}
       </Router>
     </AuthProvider>
   );
